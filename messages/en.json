@@ -65,5 +65,37 @@
     "erasureConfirm": "This permanently anonymises your account. Continue?",
     "erasureDone": "Your data has been erased. You will be signed out.",
     "updated": "Saved."
+  },
+  "weekdays": {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
+  },
+  "availability": {
+    "title": "Your availability",
+    "intro": "Set the weekly hours when clients can book you (Europe/London).",
+    "day": "Day",
+    "from": "From",
+    "to": "To",
+    "add": "Add hours",
+    "remove": "Remove",
+    "noRules": "No availability set yet. Add your first time block above.",
+    "added": "Availability updated."
+  },
+  "booking": {
+    "title": "Book a session",
+    "intro": "Choose an available time. All times are shown in UK time.",
+    "noSlots": "No available slots in the next two weeks.",
+    "book": "Book",
+    "booking": "Booking…",
+    "confirmed": "Your session is booked.",
+    "slotTaken": "Sorry, that slot was just taken. Please choose another.",
+    "boundToOther": "You are already registered with another trainer.",
+    "signInToBook": "Please sign in to book a session.",
+    "trainerNotFound": "Trainer not found."
   }
 }
