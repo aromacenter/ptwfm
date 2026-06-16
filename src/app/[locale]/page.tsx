@@ -1,6 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 
 export default async function HomePage({
   params,
@@ -13,17 +12,7 @@ export default async function HomePage({
 
   return (
     <main className="flex flex-1 flex-col">
-      <header className="flex items-center justify-between p-6">
-        <span className="text-lg font-semibold">{t("common.appName")}</span>
-        <div className="flex items-center gap-4">
-          <LocaleSwitcher />
-          <Link href="/login" className="text-sm underline">
-            {t("common.signIn")}
-          </Link>
-        </div>
-      </header>
-
-      <section className="flex flex-1 flex-col items-center justify-center gap-6 px-6 text-center">
+      <section className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16 text-center">
         <h1 className="max-w-2xl text-4xl font-bold sm:text-5xl">
           {t("home.title")}
         </h1>

@@ -12,6 +12,14 @@
     "cancel": "Mégse",
     "language": "Nyelv"
   },
+  "nav": {
+    "bookings": "Foglalások",
+    "billing": "Fizetés",
+    "privacy": "Adatvédelem",
+    "availability": "Elérhetőség",
+    "clients": "Ügyfelek",
+    "insights": "Elemzés"
+  },
   "home": {
     "title": "Eddz okosabban. Foglalj online.",
     "subtitle": "Minden-egyben platform személyi edzőknek és ügyfeleiknek.",

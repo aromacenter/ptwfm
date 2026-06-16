@@ -36,7 +36,12 @@ export function isBillingRecordDeletable(
   recordDate: Date,
   asOf: Date = new Date(),
 ): boolean {
+  return recordDate.getTime() < retentionCutoff(asOf).getTime();
+}
+
+/** The date before which records have passed the retention window. */
+export function retentionCutoff(asOf: Date = new Date()): Date {
   const cutoff = new Date(asOf);
   cutoff.setFullYear(cutoff.getFullYear() - BILLING_RETENTION_YEARS);
-  return recordDate.getTime() < cutoff.getTime();
+  return cutoff;
 }

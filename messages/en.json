@@ -12,6 +12,14 @@
     "cancel": "Cancel",
     "language": "Language"
   },
+  "nav": {
+    "bookings": "Bookings",
+    "billing": "Payments",
+    "privacy": "Privacy",
+    "availability": "Availability",
+    "clients": "Clients",
+    "insights": "Insights"
+  },
   "home": {
     "title": "Train smarter. Book online.",
     "subtitle": "The all-in-one platform for personal trainers and their clients.",

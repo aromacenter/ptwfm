@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   buildErasureUserUpdate,
   isBillingRecordDeletable,
+  retentionCutoff,
   BILLING_RETENTION_YEARS,
 } from "@/lib/gdpr/anonymize";
 
@@ -42,5 +43,12 @@ describe("isBillingRecordDeletable", () => {
     const boundary = new Date(asOf);
     boundary.setFullYear(boundary.getFullYear() - BILLING_RETENTION_YEARS);
     expect(isBillingRecordDeletable(boundary, asOf)).toBe(false);
+  });
+});
+
+describe("retentionCutoff", () => {
+  it("is BILLING_RETENTION_YEARS before the reference date", () => {
+    const cutoff = retentionCutoff(new Date("2026-06-16T00:00:00Z"));
+    expect(cutoff.getUTCFullYear()).toBe(2026 - BILLING_RETENTION_YEARS);
   });
 });

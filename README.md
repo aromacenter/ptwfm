@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PT Management
 
-## Getting Started
+A standalone SaaS web app for personal trainers and their clients: online
+booking, payments, planning and AI assistance. Built for the **UK market**
+(GBP, Europe/London, UK GDPR) and bilingual (English / Hungarian).
 
-First, run the development server:
+## Features
+
+- **Auth & roles** — trainers, clients, admin (Auth.js v5, argon2id hashing).
+- **Booking** — trainers set weekly hourly availability; clients book open
+  slots. Timezone-correct (BST/GMT) with double-booking protection.
+- **Payments (Stripe, GBP)** — prepay a session, buy packages (session
+  credits), or Bacs Direct Debit mandate; idempotent webhooks.
+- **24-hour cancellation policy** — free if cancelled ≥24h before; otherwise the
+  session is charged (credit forfeited or late fee collected off-session).
+- **Trainer tools** — client database, consent-gated & audited health notes,
+  day/week/month training plans.
+- **AI (Gemini)** — schedule optimisation and client progress summaries from
+  minimised, de-identified data.
+- **UK GDPR** — explicit health-data consent, DSAR export & erasure, audit log,
+  PECR cookie banner, retention job. See `docs/`.
+
+## Stack
+
+Next.js 16 (App Router, TS) · Prisma 6 + PostgreSQL · Auth.js v5 · next-intl ·
+Tailwind v4 · Stripe · `@google/genai` · Vitest + Playwright + axe.
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install                 # also runs `prisma generate` (postinstall)
+cp .env.example .env        # fill in DATABASE_URL, AUTH_SECRET, Stripe, Gemini
+npx prisma migrate deploy   # apply schema to your database
+npm run dev                 # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script | Purpose |
+|---|---|
+| `npm run dev` / `build` / `start` | Next.js dev / production build / serve |
+| `npm test` | Vitest unit + integration (set `RUN_DB_TESTS=1` for DB tests) |
+| `npm run test:e2e` | Playwright end-to-end + axe accessibility |
+| `npm run lint` / `typecheck` | ESLint / `tsc --noEmit` |
+| `npm run db:migrate` / `db:studio` / `db:seed` | Prisma helpers |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Integration and e2e tests need a PostgreSQL database. CI provisions one and
+runs them with `RUN_DB_TESTS=1`.
 
-## Learn More
+## Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+See `.env.example`: `DATABASE_URL`, `AUTH_SECRET`, `NEXTAUTH_URL`,
+`STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`,
+`GEMINI_API_KEY`, optional `GEMINI_MODEL`, and `CRON_SECRET`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment (Railway + GitHub)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Pushing to `main` triggers GitHub Actions CI (lint, typecheck, unit +
+  integration tests, build, `npm audit`, e2e).
+- Railway deploys `main`. A PostgreSQL plugin provides `DATABASE_URL`; set the
+  other secrets in Railway's variables.
+- On deploy, `railway.json` runs `prisma migrate deploy` then `next start`.
+- Stripe webhook endpoint: `POST /api/stripe/webhook` (set the signing secret).
+- Schedule the retention job: `POST /api/cron/retention` with the
+  `x-cron-secret` header set to `CRON_SECRET`.
 
-## Deploy on Vercel
+## Compliance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Working-draft compliance documents live in `docs/` (DPIA, privacy policy, terms
+incl. the 24h cancellation policy and Bacs Direct Debit Guarantee, retention
+schedule). **Have them reviewed by a qualified UK adviser before launch.**

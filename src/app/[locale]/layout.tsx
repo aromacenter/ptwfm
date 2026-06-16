@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { CookieBanner } from "@/components/cookie-banner";
+import { Nav } from "@/components/nav";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -46,6 +47,7 @@ export default async function LocaleLayout({
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
+          <Nav />
           {children}
           <CookieBanner />
         </NextIntlClientProvider>
