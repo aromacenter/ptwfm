@@ -1,0 +1,364 @@
+// PT Management — Prisma schema
+// PostgreSQL. UK market: GBP, Europe/London. UK GDPR-aware data model.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  TRAINER
+  CLIENT
+  ADMIN
+}
+
+enum AppointmentStatus {
+  BOOKED
+  COMPLETED
+  CANCELLED_FREE // cancelled more than 24h before -> no charge
+  CANCELLED_LATE // cancelled within 24h -> charged
+  NO_SHOW
+}
+
+enum ConsentType {
+  HEALTH_DATA // Article 9 special category — requires explicit consent
+  MARKETING
+  COOKIES
+  TERMS
+}
+
+enum PaymentMethodType {
+  CARD
+  BACS_DEBIT // UK Direct Debit
+}
+
+enum PaymentMethodStatus {
+  PENDING
+  ACTIVE
+  FAILED
+  CANCELLED
+}
+
+enum PaymentType {
+  SESSION
+  PACKAGE
+  LATE_CANCEL_FEE
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PlanScope {
+  DAY
+  WEEK
+  MONTH
+}
+
+enum AiInsightType {
+  SCHEDULE_OPT
+  CLIENT_SUMMARY
+}
+
+enum DataRequestType {
+  EXPORT
+  ERASURE
+}
+
+enum DataRequestStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
+}
+
+// ---------------------------------------------------------------------------
+// Core identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(CLIENT)
+  name         String
+  phone        String?
+  locale       String   @default("en") // "en" | "hu"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  trainerProfile TrainerProfile?
+  clientProfile  ClientProfile?
+  consents       Consent[]
+  dataRequests   DataRequest[]
+  auditLogs      AuditLog[]      @relation("ActorAuditLogs")
+}
+
+model TrainerProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio           String?
+  timezone      String   @default("Europe/London")
+  hourlyRatePence Int    @default(0) // GBP stored in pence
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  clients              ClientProfile[]
+  availabilityRules    AvailabilityRule[]
+  availabilityExceptions AvailabilityException[]
+  appointments         Appointment[]
+  trainingPlans        TrainingPlan[]
+}
+
+model ClientProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trainerId       String
+  trainer         TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Restrict)
+  stripeCustomerId String? @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  healthNotes    HealthNote[]
+  appointments   Appointment[]
+  creditPacks    CreditPack[]
+  paymentMethods PaymentMethod[]
+  payments       Payment[]
+  trainingPlans  TrainingPlan[]
+
+  @@index([trainerId])
+}
+
+// ---------------------------------------------------------------------------
+// GDPR / consent / audit
+// ---------------------------------------------------------------------------
+
+// Special category (health) data — access-restricted, audited.
+model HealthNote {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+}
+
+model Consent {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        ConsentType
+  version     String // policy/text version the user agreed to
+  granted     Boolean
+  grantedAt   DateTime?
+  withdrawnAt DateTime?
+  createdAt   DateTime    @default(now())
+
+  @@index([userId, type])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation("ActorAuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+  action    String // e.g. HEALTH_NOTE_VIEW, CONSENT_GRANT, DATA_EXPORT, DATA_ERASURE
+  entity    String // e.g. HealthNote, Consent, User
+  entityId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+model DataRequest {
+  id          String            @id @default(cuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        DataRequestType
+  status      DataRequestStatus @default(PENDING)
+  requestedAt DateTime          @default(now())
+  completedAt DateTime?
+
+  @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// Availability & booking
+// ---------------------------------------------------------------------------
+
+// Weekly recurring template, split into hourly slots.
+model AvailabilityRule {
+  id        String   @id @default(cuid())
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  dayOfWeek Int // 0 = Sunday ... 6 = Saturday
+  startHour Int // 0-23 inclusive
+  endHour   Int // exclusive end (e.g. 12 means last bookable slot starts 11:00)
+  createdAt DateTime @default(now())
+
+  @@index([trainerId])
+}
+
+// One-off block (holiday) or extra availability on a specific date.
+model AvailabilityException {
+  id         String   @id @default(cuid())
+  trainerId  String
+  trainer    TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  date       DateTime // calendar date (midnight UTC marker)
+  startHour  Int
+  endHour    Int
+  isBlocked  Boolean  @default(true) // true = unavailable, false = extra availability
+  createdAt  DateTime @default(now())
+
+  @@index([trainerId, date])
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  trainerId   String
+  trainer     TrainerProfile    @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  clientId    String
+  client      ClientProfile     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  startAt     DateTime // stored in UTC
+  endAt       DateTime // stored in UTC
+  status      AppointmentStatus @default(BOOKED)
+  cancelledAt DateTime?
+  creditId    String?
+  credit      SessionCredit?    @relation(fields: [creditId], references: [id], onDelete: SetNull)
+  paymentId   String?
+  payment     Payment?          @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([trainerId, startAt]) // prevents double-booking a slot
+  @@index([clientId])
+}
+
+// ---------------------------------------------------------------------------
+// Payments
+// ---------------------------------------------------------------------------
+
+model CreditPack {
+  id            String   @id @default(cuid())
+  clientId      String
+  client        ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name          String // e.g. "12 sessions"
+  totalSessions Int
+  remaining     Int
+  purchasedAt   DateTime @default(now())
+  expiresAt     DateTime?
+  paymentId     String?
+  payment       Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  credits SessionCredit[]
+
+  @@index([clientId])
+}
+
+// A single consumable credit drawn from a pack.
+model SessionCredit {
+  id        String   @id @default(cuid())
+  packId    String
+  pack      CreditPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  appointments Appointment[]
+
+  @@index([packId])
+}
+
+model PaymentMethod {
+  id                  String              @id @default(cuid())
+  clientId            String
+  client              ClientProfile       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  stripePaymentMethodId String            @unique
+  type                PaymentMethodType
+  status              PaymentMethodStatus @default(PENDING)
+  mandateReference    String? // Bacs Direct Debit mandate id
+  brand               String? // card brand / bank name
+  last4               String?
+  isDefault           Boolean             @default(false)
+  createdAt           DateTime            @default(now())
+
+  @@index([clientId])
+}
+
+model Payment {
+  id                    String        @id @default(cuid())
+  clientId              String
+  client                ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  amountPence           Int
+  currency              String        @default("gbp")
+  type                  PaymentType
+  status                PaymentStatus @default(PENDING)
+  stripePaymentIntentId String?       @unique
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  appointments Appointment[]
+  creditPacks  CreditPack[]
+
+  @@index([clientId])
+}
+
+// ---------------------------------------------------------------------------
+// Planning & AI
+// ---------------------------------------------------------------------------
+
+model TrainingPlan {
+  id        String    @id @default(cuid())
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  clientId  String?
+  client    ClientProfile? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  scope     PlanScope
+  startDate DateTime
+  endDate   DateTime
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  items PlanItem[]
+
+  @@index([trainerId])
+  @@index([clientId])
+}
+
+model PlanItem {
+  id        String   @id @default(cuid())
+  planId    String
+  plan      TrainingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  position  Int      @default(0)
+  content   String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([planId])
+}
+
+model AiInsight {
+  id        String        @id @default(cuid())
+  type      AiInsightType
+  targetId  String // trainerId for SCHEDULE_OPT, clientId for CLIENT_SUMMARY
+  content   String
+  createdAt DateTime      @default(now())
+
+  @@index([type, targetId])
+}

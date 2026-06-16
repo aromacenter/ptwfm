@@ -1,0 +1,41 @@
+{
+  "common": {
+    "appName": "PT Management",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signUp": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full name",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "language": "Language"
+  },
+  "home": {
+    "title": "Train smarter. Book online.",
+    "subtitle": "The all-in-one platform for personal trainers and their clients.",
+    "ctaTrainer": "I'm a trainer",
+    "ctaClient": "Book a session"
+  },
+  "auth": {
+    "loginTitle": "Sign in to your account",
+    "registerTitle": "Create your account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "roleClient": "Client",
+    "roleTrainer": "Trainer",
+    "iAmA": "I am a",
+    "invalidCredentials": "Invalid email or password.",
+    "emailTaken": "An account with this email already exists.",
+    "registerSuccess": "Account created. You can now sign in.",
+    "healthConsentLabel": "I explicitly consent to the processing of my health and fitness data so my trainer can plan my sessions. I can withdraw this at any time.",
+    "termsConsentLabel": "I agree to the Terms of Service, including the 24-hour cancellation policy."
+  },
+  "validation": {
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "nameRequired": "Please enter your name.",
+    "consentRequired": "This consent is required to continue."
+  }
+}

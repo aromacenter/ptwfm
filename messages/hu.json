@@ -1,0 +1,41 @@
+{
+  "common": {
+    "appName": "PT Management",
+    "signIn": "Bejelentkezés",
+    "signOut": "Kijelentkezés",
+    "signUp": "Regisztráció",
+    "email": "E-mail",
+    "password": "Jelszó",
+    "name": "Teljes név",
+    "loading": "Betöltés…",
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "language": "Nyelv"
+  },
+  "home": {
+    "title": "Eddz okosabban. Foglalj online.",
+    "subtitle": "Minden-egyben platform személyi edzőknek és ügyfeleiknek.",
+    "ctaTrainer": "Edző vagyok",
+    "ctaClient": "Időpontfoglalás"
+  },
+  "auth": {
+    "loginTitle": "Jelentkezz be a fiókodba",
+    "registerTitle": "Hozd létre a fiókod",
+    "noAccount": "Nincs még fiókod?",
+    "haveAccount": "Van már fiókod?",
+    "roleClient": "Ügyfél",
+    "roleTrainer": "Edző",
+    "iAmA": "Én egy",
+    "invalidCredentials": "Hibás e-mail vagy jelszó.",
+    "emailTaken": "Ezzel az e-mail címmel már létezik fiók.",
+    "registerSuccess": "Fiók létrehozva. Most már bejelentkezhetsz.",
+    "healthConsentLabel": "Kifejezetten hozzájárulok az egészségügyi és fitnesz adataim kezeléséhez, hogy az edzőm megtervezhesse az edzéseimet. Ezt bármikor visszavonhatom.",
+    "termsConsentLabel": "Elfogadom a Felhasználási Feltételeket, beleértve a 24 órás lemondási szabályt."
+  },
+  "validation": {
+    "emailInvalid": "Adj meg egy érvényes e-mail címet.",
+    "passwordTooShort": "A jelszónak legalább 8 karakteresnek kell lennie.",
+    "nameRequired": "Add meg a neved.",
+    "consentRequired": "A folytatáshoz ez a hozzájárulás szükséges."
+  }
+}
