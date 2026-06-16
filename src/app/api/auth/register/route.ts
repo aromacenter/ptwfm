@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth/password";
 import { registerSchema } from "@/lib/validation/auth";
+import { CONSENT_VERSION } from "@/lib/gdpr/consent";
 
 export const runtime = "nodejs";
-
-// Current version of the consent texts the user is agreeing to.
-const CONSENT_VERSION = "1.0";
 
 export async function POST(request: Request) {
   let body: unknown;

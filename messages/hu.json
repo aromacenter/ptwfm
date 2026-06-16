@@ -37,5 +37,33 @@
     "passwordTooShort": "A jelszónak legalább 8 karakteresnek kell lennie.",
     "nameRequired": "Add meg a neved.",
     "consentRequired": "A folytatáshoz ez a hozzájárulás szükséges."
+  },
+  "cookies": {
+    "message": "Az oldal működéséhez szükséges sütiket használunk. A hozzájárulásoddal a használat elemzéséhez is használunk sütiket. Ezt bármikor módosíthatod.",
+    "acceptAll": "Összes elfogadása",
+    "essentialOnly": "Csak a szükségesek"
+  },
+  "privacy": {
+    "title": "Adatvédelem és az adataid",
+    "intro": "Kezeld a hozzájárulásaidat és gyakorold az adatvédelmi jogaidat (UK GDPR).",
+    "consents": "Hozzájárulásaid",
+    "healthData": "Egészségügyi és fitnesz adatok",
+    "healthDataDesc": "Lehetővé teszi, hogy az edződ egészségügyi jegyzeteket tároljon az edzéseid tervezéséhez.",
+    "marketing": "Marketing e-mailek",
+    "marketingDesc": "Alkalmankénti hírek és ajánlatok. Bármikor leiratkozhatsz.",
+    "granted": "Megadva",
+    "withdrawn": "Visszavonva",
+    "grant": "Megadás",
+    "withdraw": "Visszavonás",
+    "yourRights": "Adatvédelmi jogaid",
+    "exportTitle": "Adataid letöltése",
+    "exportDesc": "Gépi olvasható másolat minden rólad tárolt személyes adatról.",
+    "exportButton": "Letöltés (JSON)",
+    "erasureTitle": "Fiók törlése",
+    "erasureDesc": "Személyes adataid törlése. A pénzügyi nyilvántartásokat a törvény szerint megőrizzük, de anonimizálva.",
+    "erasureButton": "Törlés kérése",
+    "erasureConfirm": "Ez véglegesen anonimizálja a fiókodat. Folytatod?",
+    "erasureDone": "Az adataidat töröltük. Kijelentkeztetünk.",
+    "updated": "Mentve."
   }
 }

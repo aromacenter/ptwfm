@@ -37,5 +37,33 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "nameRequired": "Please enter your name.",
     "consentRequired": "This consent is required to continue."
+  },
+  "cookies": {
+    "message": "We use essential cookies to make this site work. With your consent we also use cookies to understand usage. You can change this at any time.",
+    "acceptAll": "Accept all",
+    "essentialOnly": "Essential only"
+  },
+  "privacy": {
+    "title": "Privacy & your data",
+    "intro": "Manage your consents and exercise your data rights under UK GDPR.",
+    "consents": "Your consents",
+    "healthData": "Health & fitness data",
+    "healthDataDesc": "Lets your trainer store notes about your health to plan sessions.",
+    "marketing": "Marketing emails",
+    "marketingDesc": "Occasional updates and offers. You can opt out at any time.",
+    "granted": "Granted",
+    "withdrawn": "Withdrawn",
+    "grant": "Grant",
+    "withdraw": "Withdraw",
+    "yourRights": "Your data rights",
+    "exportTitle": "Download your data",
+    "exportDesc": "Get a machine-readable copy of all the personal data we hold about you.",
+    "exportButton": "Download (JSON)",
+    "erasureTitle": "Delete your account",
+    "erasureDesc": "Erase your personal data. Financial records are kept where the law requires, but anonymised.",
+    "erasureButton": "Request erasure",
+    "erasureConfirm": "This permanently anonymises your account. Continue?",
+    "erasureDone": "Your data has been erased. You will be signed out.",
+    "updated": "Saved."
   }
 }

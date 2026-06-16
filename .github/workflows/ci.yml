@@ -26,6 +26,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/ptmanagement?schema=public
       AUTH_SECRET: ci-test-secret-0123456789abcdefghijklmnop
       NEXTAUTH_URL: http://localhost:3000
+      RUN_DB_TESTS: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
