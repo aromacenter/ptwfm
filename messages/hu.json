@@ -97,5 +97,18 @@
     "boundToOther": "Már egy másik edzőhöz vagy regisztrálva.",
     "signInToBook": "A foglaláshoz jelentkezz be.",
     "trainerNotFound": "Az edző nem található."
+  },
+  "billing": {
+    "title": "Alkalmak és fizetés",
+    "intro": "Vásárolj alkalom-krediteket. Az árakat az edződ állítja be.",
+    "creditsBalance": "Elérhető alkalom-kreditek",
+    "buy": "Vásárlás",
+    "single": "Egy alkalom",
+    "pack5": "5 alkalom (5% kedvezmény)",
+    "pack12": "12 alkalom (10% kedvezmény)",
+    "redirecting": "Átirányítás a biztonságos fizetéshez…",
+    "noTrainer": "Előbb foglalj egy időpontot, hogy kiválaszd az edződ.",
+    "success": "A fizetés megérkezett. A kreditjeid elérhetők.",
+    "cancelled": "A fizetés megszakítva."
   }
 }

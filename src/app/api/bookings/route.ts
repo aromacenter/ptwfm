@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { bookingSchema } from "@/lib/validation/booking";
 import { canBook } from "@/lib/booking/service";
+import { pickConsumableCredit } from "@/lib/payments/pricing";
 
 export const runtime = "nodejs";
 
@@ -60,6 +61,36 @@ export async function POST(request: Request) {
         });
         client = created;
       }
+
+      // Consume a prepaid credit if the client has one (covers single-session
+      // prepay and packages). Booking without credit is allowed here; payment
+      // enforcement is handled separately.
+      const credits = await tx.sessionCredit.findMany({
+        where: { usedAt: null, pack: { clientId: client.id } },
+        include: { pack: { select: { expiresAt: true } } },
+      });
+      const pick = pickConsumableCredit(
+        credits.map((c) => ({
+          id: c.id,
+          usedAt: c.usedAt,
+          expiresAt: c.pack.expiresAt,
+          createdAt: c.createdAt,
+        })),
+      );
+      let creditId: string | null = null;
+      if (pick) {
+        const original = credits.find((c) => c.id === pick.id)!;
+        await tx.sessionCredit.update({
+          where: { id: pick.id },
+          data: { usedAt: new Date() },
+        });
+        await tx.creditPack.update({
+          where: { id: original.packId },
+          data: { remaining: { decrement: 1 } },
+        });
+        creditId = pick.id;
+      }
+
       return tx.appointment.create({
         data: {
           trainerId,
@@ -67,6 +98,7 @@ export async function POST(request: Request) {
           startAt: start,
           endAt: new Date(start.getTime() + SLOT_MS),
           status: "BOOKED",
+          creditId,
         },
       });
     });

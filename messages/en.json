@@ -97,5 +97,18 @@
     "boundToOther": "You are already registered with another trainer.",
     "signInToBook": "Please sign in to book a session.",
     "trainerNotFound": "Trainer not found."
+  },
+  "billing": {
+    "title": "Sessions & payment",
+    "intro": "Buy session credits. Prices are set by your trainer.",
+    "creditsBalance": "Available session credits",
+    "buy": "Buy",
+    "single": "Single session",
+    "pack5": "5 sessions (5% off)",
+    "pack12": "12 sessions (10% off)",
+    "redirecting": "Redirecting to secure checkout…",
+    "noTrainer": "Book a session first to choose your trainer.",
+    "success": "Payment received. Your credits are available.",
+    "cancelled": "Checkout cancelled."
   }
 }
