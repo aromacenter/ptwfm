@@ -110,5 +110,16 @@
     "noTrainer": "Book a session first to choose your trainer.",
     "success": "Payment received. Your credits are available.",
     "cancelled": "Checkout cancelled."
+  },
+  "myBookings": {
+    "title": "My bookings",
+    "intro": "Your upcoming sessions.",
+    "noBookings": "You have no upcoming sessions.",
+    "cancel": "Cancel",
+    "cancelling": "Cancelling…",
+    "policyNote": "Free cancellation up to 24 hours before. Within 24 hours the session is charged.",
+    "cancelConfirm": "Cancel this session?",
+    "freeCancelled": "Cancelled free of charge.",
+    "lateCancelled": "Cancelled within 24 hours — this session is charged."
   }
 }

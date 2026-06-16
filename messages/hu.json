@@ -110,5 +110,16 @@
     "noTrainer": "Előbb foglalj egy időpontot, hogy kiválaszd az edződ.",
     "success": "A fizetés megérkezett. A kreditjeid elérhetők.",
     "cancelled": "A fizetés megszakítva."
+  },
+  "myBookings": {
+    "title": "Foglalásaim",
+    "intro": "A közelgő alkalmaid.",
+    "noBookings": "Nincs közelgő alkalmad.",
+    "cancel": "Lemondás",
+    "cancelling": "Lemondás…",
+    "policyNote": "Ingyenes lemondás az időpont előtt legkésőbb 24 órával. 24 órán belül az alkalom díjköteles.",
+    "cancelConfirm": "Lemondod ezt az alkalmat?",
+    "freeCancelled": "Ingyenesen lemondva.",
+    "lateCancelled": "24 órán belül lemondva — ez az alkalom díjköteles."
   }
 }
