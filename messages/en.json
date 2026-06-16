@@ -121,5 +121,25 @@
     "cancelConfirm": "Cancel this session?",
     "freeCancelled": "Cancelled free of charge.",
     "lateCancelled": "Cancelled within 24 hours — this session is charged."
+  },
+  "clients": {
+    "title": "Clients",
+    "intro": "The clients registered with you.",
+    "noClients": "No clients yet. Share your booking link to get started.",
+    "view": "View",
+    "notesTitle": "Health & fitness notes",
+    "consentMissing": "This client has not consented to health-data processing, so notes are unavailable.",
+    "notePlaceholder": "Add a private note about this client's health or fitness…",
+    "addNote": "Add note",
+    "noNotes": "No notes yet.",
+    "plansTitle": "Training plans",
+    "planTitlePlaceholder": "Plan title (e.g. Week 1 — base building)",
+    "itemsPlaceholder": "One item per line (e.g. exercises, targets)…",
+    "scope": "Scope",
+    "scopeDay": "Day",
+    "scopeWeek": "Week",
+    "scopeMonth": "Month",
+    "addPlan": "Create plan",
+    "noPlans": "No plans yet."
   }
 }

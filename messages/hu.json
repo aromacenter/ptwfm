@@ -121,5 +121,25 @@
     "cancelConfirm": "Lemondod ezt az alkalmat?",
     "freeCancelled": "Ingyenesen lemondva.",
     "lateCancelled": "24 órán belül lemondva — ez az alkalom díjköteles."
+  },
+  "clients": {
+    "title": "Ügyfelek",
+    "intro": "A hozzád regisztrált ügyfelek.",
+    "noClients": "Még nincs ügyfeled. Oszd meg a foglalási linkedet.",
+    "view": "Megnyitás",
+    "notesTitle": "Egészségügyi és fitnesz jegyzetek",
+    "consentMissing": "Ez az ügyfél nem járult hozzá az egészségügyi adatok kezeléséhez, így a jegyzetek nem érhetők el.",
+    "notePlaceholder": "Privát jegyzet az ügyfél egészségéről vagy fittségéről…",
+    "addNote": "Jegyzet hozzáadása",
+    "noNotes": "Még nincs jegyzet.",
+    "plansTitle": "Edzéstervek",
+    "planTitlePlaceholder": "Terv címe (pl. 1. hét — alapozás)",
+    "itemsPlaceholder": "Soronként egy elem (pl. gyakorlatok, célok)…",
+    "scope": "Időtáv",
+    "scopeDay": "Nap",
+    "scopeWeek": "Hét",
+    "scopeMonth": "Hónap",
+    "addPlan": "Terv létrehozása",
+    "noPlans": "Még nincs terv."
   }
 }
