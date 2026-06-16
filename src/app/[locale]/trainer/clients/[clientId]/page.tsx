@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { getOwnedClient, clientHasHealthConsent } from "@/lib/clients/access";
 import { ClientNotes } from "@/components/client-notes";
 import { ClientPlans } from "@/components/client-plans";
+import { AiPanel } from "@/components/ai-panel";
 
 export default async function ClientDetailPage({
   params,
@@ -38,6 +39,7 @@ export default async function ClientDetailPage({
   ]);
 
   const t = await getTranslations("clients");
+  const tAi = await getTranslations("ai");
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-8 p-6">
@@ -54,6 +56,17 @@ export default async function ClientDetailPage({
           <p className="text-sm text-amber-700">{t("consentMissing")}</p>
         )}
       </section>
+
+      {hasConsent && (
+        <section className="space-y-3">
+          <AiPanel
+            endpoint="/api/ai/client-summary"
+            body={{ clientId }}
+            title={tAi("summaryTitle")}
+            generateLabel={tAi("generate")}
+          />
+        </section>
+      )}
 
       <section className="space-y-3">
         <h2 className="text-lg font-medium">{t("plansTitle")}</h2>

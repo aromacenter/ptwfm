@@ -141,5 +141,15 @@
     "scopeMonth": "Month",
     "addPlan": "Create plan",
     "noPlans": "No plans yet."
+  },
+  "ai": {
+    "summaryTitle": "AI progress summary",
+    "generate": "Generate summary",
+    "generating": "Generating…",
+    "scheduleTitle": "Schedule insights",
+    "scheduleIntro": "AI suggestions to optimise your week.",
+    "generateSchedule": "Analyse my week",
+    "unavailable": "AI is currently unavailable. Please try again later.",
+    "disclaimer": "AI-generated — review before acting."
   }
 }

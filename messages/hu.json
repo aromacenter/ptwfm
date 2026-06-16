@@ -141,5 +141,15 @@
     "scopeMonth": "Hónap",
     "addPlan": "Terv létrehozása",
     "noPlans": "Még nincs terv."
+  },
+  "ai": {
+    "summaryTitle": "AI haladás-összefoglaló",
+    "generate": "Összefoglaló generálása",
+    "generating": "Generálás…",
+    "scheduleTitle": "Időbeosztás-elemzés",
+    "scheduleIntro": "AI javaslatok a heted optimalizálásához.",
+    "generateSchedule": "Hetem elemzése",
+    "unavailable": "Az AI jelenleg nem érhető el. Próbáld újra később.",
+    "disclaimer": "AI által generált — ellenőrizd, mielőtt cselekszel."
   }
 }
