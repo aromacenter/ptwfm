@@ -26,12 +26,15 @@ function futureSlot() {
   };
 }
 
+let seq = 0;
+
 async function seedTrainerWithAvailability() {
   const slot = futureSlot();
+  seq += 1;
   const trainer = await prisma.user.create({
     data: {
       name: "Trainer",
-      email: `trainer-${Date.now()}@example.com`,
+      email: `trainer-${seq}-${Date.now()}@example.com`,
       passwordHash: "x",
       role: "TRAINER",
       trainerProfile: {
