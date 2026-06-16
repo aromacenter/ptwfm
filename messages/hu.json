@@ -37,6 +37,7 @@
     "invalidCredentials": "Hibás e-mail vagy jelszó.",
     "emailTaken": "Ezzel az e-mail címmel már létezik fiók.",
     "registerSuccess": "Fiók létrehozva. Most már bejelentkezhetsz.",
+    "genericError": "Valami hiba történt. Próbáld újra.",
     "healthConsentLabel": "Kifejezetten hozzájárulok az egészségügyi és fitnesz adataim kezeléséhez, hogy az edzőm megtervezhesse az edzéseimet. Ezt bármikor visszavonhatom.",
     "termsConsentLabel": "Elfogadom a Felhasználási Feltételeket, beleértve a 24 órás lemondási szabályt."
   },

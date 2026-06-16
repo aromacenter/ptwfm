@@ -36,13 +36,10 @@ export default function RegisterPage() {
       const data = (await res.json().catch(() => null)) as {
         error?: string;
       } | null;
-      // Map known i18n keys, otherwise show a generic message.
+      // Translate known i18n keys (e.g. "auth.emailTaken"); show a generic
+      // message for anything else (e.g. a server/database error).
       const key = data?.error ?? "";
-      setError(
-        key.includes(".")
-          ? t(key as never)
-          : t("validation.consentRequired"),
-      );
+      setError(key.includes(".") ? t(key as never) : t("auth.genericError"));
       return;
     }
 
