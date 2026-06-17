@@ -20,7 +20,27 @@
     "dashboard": "Dashboard",
     "availability": "Availability",
     "clients": "Clients",
-    "insights": "Insights"
+    "insights": "Insights",
+    "admin": "Admin"
+  },
+  "admin": {
+    "title": "Integrations",
+    "intro": "Configure payment and AI integrations. Secret keys are stored encrypted and are never shown again after saving.",
+    "configured": "Configured",
+    "notConfigured": "Not configured",
+    "sourceDb": "set here",
+    "sourceEnv": "from environment",
+    "save": "Save",
+    "saved": "Saved.",
+    "clear": "Clear",
+    "secretPlaceholder": "Enter a new value to update",
+    "labels": {
+      "STRIPE_SECRET_KEY": "Stripe secret key",
+      "STRIPE_WEBHOOK_SECRET": "Stripe webhook signing secret",
+      "STRIPE_PUBLISHABLE_KEY": "Stripe publishable key",
+      "GEMINI_API_KEY": "Gemini API key",
+      "GEMINI_MODEL": "Gemini model"
+    }
   },
   "dashboard": {
     "title": "Dashboard",

@@ -8,7 +8,8 @@ export type AuditAction =
   | "HEALTH_NOTE_VIEW"
   | "HEALTH_NOTE_CREATE"
   | "DATA_EXPORT"
-  | "DATA_ERASURE";
+  | "DATA_ERASURE"
+  | "SETTING_UPDATE";
 
 /** Writes an immutable audit-trail entry (UK GDPR accountability). */
 export function recordAudit(params: {

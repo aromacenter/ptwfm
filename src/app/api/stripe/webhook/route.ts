@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getStripe } from "@/lib/stripe";
+import { getStripe, getStripeWebhookSecret } from "@/lib/stripe";
 import { handleStripeEvent } from "@/lib/payments/handle-event";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const secret = await getStripeWebhookSecret();
   const sig = request.headers.get("stripe-signature");
   if (!secret || !sig) {
     return NextResponse.json({ error: "missing_signature" }, { status: 400 });
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   let event;
   try {
-    event = getStripe().webhooks.constructEvent(rawBody, sig, secret);
+    event = (await getStripe()).webhooks.constructEvent(rawBody, sig, secret);
   } catch {
     return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
   }

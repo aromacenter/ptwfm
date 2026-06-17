@@ -369,3 +369,12 @@ model WebhookEvent {
   type        String
   processedAt DateTime @default(now())
 }
+
+// Key-value app settings (e.g. integration credentials configured by an admin).
+// Secret values are stored encrypted (AES-256-GCM); `encrypted` marks those.
+model Setting {
+  key       String   @id
+  value     String
+  encrypted Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+}

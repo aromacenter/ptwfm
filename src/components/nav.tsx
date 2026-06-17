@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
+import { isAdmin } from "@/lib/auth/admin";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SignOutButton } from "@/components/sign-out-button";
 
@@ -31,6 +32,14 @@ export async function Nav() {
       { href: "/my-bookings", label: t("nav.bookings") },
       { href: "/billing", label: t("nav.billing") },
       { href: "/privacy", label: t("nav.privacy") },
+    ];
+  }
+
+  // Admins get an integrations link in addition to their role links.
+  if (isAdmin(user)) {
+    links = [
+      ...links,
+      { href: "/admin/integrations", label: t("nav.admin") },
     ];
   }
 

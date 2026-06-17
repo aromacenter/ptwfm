@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   const customerId = await ensureStripeCustomer(client.id);
   const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
-  const session = await getStripe().checkout.sessions.create({
+  const session = await (await getStripe()).checkout.sessions.create({
     mode: "payment",
     customer: customerId,
     line_items: [

@@ -10,7 +10,7 @@ export async function ensureStripeCustomer(clientProfileId: string): Promise<str
   if (!client) throw new Error("client_not_found");
   if (client.stripeCustomerId) return client.stripeCustomerId;
 
-  const customer = await getStripe().customers.create({
+  const customer = await (await getStripe()).customers.create({
     email: client.user.email,
     name: client.user.name,
     metadata: { clientProfileId },

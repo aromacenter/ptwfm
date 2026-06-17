@@ -24,7 +24,7 @@ export async function POST() {
   }
 
   const customerId = await ensureStripeCustomer(client.id);
-  const setupIntent = await getStripe().setupIntents.create({
+  const setupIntent = await (await getStripe()).setupIntents.create({
     customer: customerId,
     payment_method_types: ["bacs_debit"],
     metadata: { clientId: client.id },

@@ -96,7 +96,7 @@ export async function POST(request: Request) {
     });
     if (pm) {
       try {
-        const intent = await getStripe().paymentIntents.create({
+        const intent = await (await getStripe()).paymentIntents.create({
           amount: appt.trainer.hourlyRatePence,
           currency: CURRENCY,
           customer: appt.client.stripeCustomerId,

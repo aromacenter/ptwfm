@@ -1,23 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
+import { resolveIntegration } from "@/lib/settings";
 
-let client: GoogleGenAI | null = null;
+const DEFAULT_MODEL = "gemini-2.0-flash";
 
-function getClient(): GoogleGenAI {
-  if (!client) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("GEMINI_API_KEY is not set");
-    client = new GoogleGenAI({ apiKey });
-  }
-  return client;
-}
-
-const MODEL = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
-
-/** Thin wrapper around a single-turn Gemini text generation. */
+/** Thin wrapper around a single-turn Gemini text generation. The API key and
+ * model are resolved from the admin settings (DB) or env at call time. */
 export async function generateText(prompt: string): Promise<string> {
-  const res = await getClient().models.generateContent({
-    model: MODEL,
-    contents: prompt,
-  });
+  const apiKey = await resolveIntegration("GEMINI_API_KEY");
+  if (!apiKey) throw new Error("Gemini API key is not configured");
+  const model = (await resolveIntegration("GEMINI_MODEL")) ?? DEFAULT_MODEL;
+
+  const ai = new GoogleGenAI({ apiKey });
+  const res = await ai.models.generateContent({ model, contents: prompt });
   return res.text ?? "";
 }
