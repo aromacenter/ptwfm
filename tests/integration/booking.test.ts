@@ -13,7 +13,6 @@ import { POST as bookingPOST } from "@/app/api/bookings/route";
 
 const mockedGetUser = vi.mocked(session.getCurrentUser);
 
-// A bookable instant three days from now at 10:00 London time.
 function futureSlot() {
   const target = DateTime.now()
     .setZone("Europe/London")
@@ -27,7 +26,6 @@ function futureSlot() {
 }
 
 let seq = 0;
-
 async function seedTrainerWithAvailability() {
   const slot = futureSlot();
   seq += 1;
@@ -54,18 +52,36 @@ async function seedTrainerWithAvailability() {
   return { trainerId: trainer.trainerProfile!.id, slot };
 }
 
-async function makeClient(email: string) {
+async function makeClient(email: string, dedicateTo?: string) {
   const user = await prisma.user.create({
-    data: { name: "Client", email, passwordHash: "x", role: "CLIENT" },
+    data: {
+      name: "Client",
+      email,
+      passwordHash: "x",
+      role: "CLIENT",
+      clientProfile: dedicateTo
+        ? { create: { trainerId: dedicateTo } }
+        : undefined,
+    },
   });
   return user;
 }
 
-function bookReq(trainerId: string, iso: string) {
+function asClient(user: { id: string; email: string }) {
+  mockedGetUser.mockResolvedValue({
+    id: user.id,
+    email: user.email,
+    name: "Client",
+    role: "CLIENT",
+    locale: "en",
+  });
+}
+
+function bookReq(trainerId: string, iso: string, kind?: "SESSION" | "CONSULTATION") {
   return new Request("http://localhost/api/bookings", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ trainerId, start: iso }),
+    body: JSON.stringify({ trainerId, start: iso, ...(kind ? { kind } : {}) }),
   });
 }
 
@@ -74,103 +90,93 @@ describe.runIf(runDbTests)("booking flow (DB)", () => {
     await resetDb();
     mockedGetUser.mockReset();
   });
-
   afterAll(async () => {
     await prisma.$disconnect();
   });
 
-  it("books an available slot and creates the client profile", async () => {
+  it("consultation booking creates an unbound client profile", async () => {
     const { trainerId, slot } = await seedTrainerWithAvailability();
     const client = await makeClient("c1@example.com");
-    mockedGetUser.mockResolvedValue({
-      id: client.id,
-      email: client.email,
-      name: client.name,
-      role: "CLIENT",
-      locale: "en",
-    });
+    asClient(client);
 
-    const res = await bookingPOST(bookReq(trainerId, slot.iso));
+    const res = await bookingPOST(bookReq(trainerId, slot.iso, "CONSULTATION"));
     expect(res.status).toBe(201);
-
-    const appts = await prisma.appointment.findMany({ where: { trainerId } });
-    expect(appts).toHaveLength(1);
-    expect(appts[0].status).toBe("BOOKED");
 
     const profile = await prisma.clientProfile.findUnique({
       where: { userId: client.id },
     });
-    expect(profile?.trainerId).toBe(trainerId);
+    expect(profile).not.toBeNull();
+    expect(profile?.trainerId).toBeNull(); // not dedicated yet
+
+    const appt = await prisma.appointment.findFirst({ where: { trainerId } });
+    expect(appt?.kind).toBe("CONSULTATION");
+  });
+
+  it("rejects a session booking when not dedicated", async () => {
+    const { trainerId, slot } = await seedTrainerWithAvailability();
+    const client = await makeClient("c2@example.com");
+    asClient(client);
+
+    const res = await bookingPOST(bookReq(trainerId, slot.iso, "SESSION"));
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toBe("not_dedicated");
+  });
+
+  it("allows a session booking for a dedicated client and consumes a credit", async () => {
+    const { trainerId, slot } = await seedTrainerWithAvailability();
+    const client = await makeClient("c3@example.com", trainerId);
+    const profile = await prisma.clientProfile.findUnique({
+      where: { userId: client.id },
+    });
+    const pack = await prisma.creditPack.create({
+      data: { clientId: profile!.id, name: "1", totalSessions: 1, remaining: 1 },
+    });
+    await prisma.sessionCredit.create({ data: { packId: pack.id } });
+    asClient(client);
+
+    const res = await bookingPOST(bookReq(trainerId, slot.iso, "SESSION"));
+    expect(res.status).toBe(201);
+
+    const appt = await prisma.appointment.findFirst({ where: { trainerId } });
+    expect(appt?.kind).toBe("SESSION");
+    expect(appt?.creditId).not.toBeNull();
   });
 
   it("prevents double-booking the same slot", async () => {
     const { trainerId, slot } = await seedTrainerWithAvailability();
-    const c1 = await makeClient("c2@example.com");
-    const c2 = await makeClient("c3@example.com");
+    const c1 = await makeClient("c4@example.com");
+    const c2 = await makeClient("c5@example.com");
 
-    mockedGetUser.mockResolvedValue({
-      id: c1.id,
-      email: c1.email,
-      name: c1.name,
-      role: "CLIENT",
-      locale: "en",
-    });
-    const first = await bookingPOST(bookReq(trainerId, slot.iso));
-    expect(first.status).toBe(201);
+    asClient(c1);
+    expect((await bookingPOST(bookReq(trainerId, slot.iso, "CONSULTATION"))).status).toBe(201);
 
-    mockedGetUser.mockResolvedValue({
-      id: c2.id,
-      email: c2.email,
-      name: c2.name,
-      role: "CLIENT",
-      locale: "en",
-    });
-    const second = await bookingPOST(bookReq(trainerId, slot.iso));
-    expect(second.status).toBe(409);
+    asClient(c2);
+    expect((await bookingPOST(bookReq(trainerId, slot.iso, "CONSULTATION"))).status).toBe(409);
 
-    const appts = await prisma.appointment.count({ where: { trainerId } });
-    expect(appts).toBe(1);
+    expect(await prisma.appointment.count({ where: { trainerId } })).toBe(1);
   });
 
   it("rejects a slot outside the trainer's availability", async () => {
     const { trainerId } = await seedTrainerWithAvailability();
-    const client = await makeClient("c4@example.com");
-    mockedGetUser.mockResolvedValue({
-      id: client.id,
-      email: client.email,
-      name: client.name,
-      role: "CLIENT",
-      locale: "en",
-    });
-
-    // 03:00 London on the same future day — not offered.
+    const client = await makeClient("c6@example.com");
+    asClient(client);
     const offHours = DateTime.now()
       .setZone("Europe/London")
       .plus({ days: 3 })
       .set({ hour: 3, minute: 0, second: 0, millisecond: 0 })
       .toUTC()
       .toISO()!;
-
-    const res = await bookingPOST(bookReq(trainerId, offHours));
-    expect(res.status).toBe(409);
+    expect((await bookingPOST(bookReq(trainerId, offHours, "CONSULTATION"))).status).toBe(409);
   });
 
-  it("rejects booking with a second trainer (1 client ↔ 1 trainer)", async () => {
+  it("rejects a consultation when already dedicated", async () => {
     const a = await seedTrainerWithAvailability();
     const b = await seedTrainerWithAvailability();
-    const client = await makeClient("c5@example.com");
-    mockedGetUser.mockResolvedValue({
-      id: client.id,
-      email: client.email,
-      name: client.name,
-      role: "CLIENT",
-      locale: "en",
-    });
+    const client = await makeClient("c7@example.com", a.trainerId); // dedicated to A
+    asClient(client);
 
-    const first = await bookingPOST(bookReq(a.trainerId, a.slot.iso));
-    expect(first.status).toBe(201);
-
-    const second = await bookingPOST(bookReq(b.trainerId, b.slot.iso));
-    expect(second.status).toBe(409);
+    const res = await bookingPOST(bookReq(b.trainerId, b.slot.iso, "CONSULTATION"));
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toBe("already_dedicated");
   });
 });

@@ -28,6 +28,11 @@ enum AppointmentStatus {
   NO_SHOW
 }
 
+enum AppointmentKind {
+  SESSION // a regular training session (requires a dedicated trainer)
+  CONSULTATION // an initial consultation before the trainer dedicates the client
+}
+
 enum ConsentType {
   HEALTH_DATA // Article 9 special category — requires explicit consent
   MARKETING
@@ -110,6 +115,8 @@ model TrainerProfile {
   userId        String   @unique
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   bio           String?
+  headline      String? // short public tagline shown in the directory
+  acceptingClients Boolean @default(true) // shown publicly + open to consultations
   timezone      String   @default("Europe/London")
   hourlyRatePence Int    @default(0) // GBP stored in pence
   createdAt     DateTime @default(now())
@@ -126,8 +133,8 @@ model ClientProfile {
   id              String   @id @default(cuid())
   userId          String   @unique
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  trainerId       String
-  trainer         TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Restrict)
+  trainerId       String? // the dedicated trainer; null until a trainer dedicates the client
+  trainer         TrainerProfile? @relation(fields: [trainerId], references: [id], onDelete: SetNull)
   stripeCustomerId String? @unique
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -238,6 +245,7 @@ model Appointment {
   startAt     DateTime // stored in UTC
   endAt       DateTime // stored in UTC
   status      AppointmentStatus @default(BOOKED)
+  kind        AppointmentKind   @default(SESSION)
   cancelledAt DateTime?
   creditId    String?
   credit      SessionCredit?    @relation(fields: [creditId], references: [id], onDelete: SetNull)

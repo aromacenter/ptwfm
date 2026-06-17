@@ -31,8 +31,8 @@ export async function POST(request: Request) {
     where: { userId: user.id },
     include: { trainer: { select: { hourlyRatePence: true } } },
   });
-  if (!client) {
-    return NextResponse.json({ error: "no_client_profile" }, { status: 400 });
+  if (!client || !client.trainer) {
+    return NextResponse.json({ error: "no_trainer" }, { status: 400 });
   }
 
   const amount = priceForPackage(client.trainer.hourlyRatePence, option);

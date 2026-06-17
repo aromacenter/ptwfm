@@ -14,6 +14,7 @@
   },
   "nav": {
     "book": "Foglalás",
+    "findTrainer": "Edző keresése",
     "bookings": "Foglalások",
     "billing": "Fizetés",
     "privacy": "Adatvédelem",
@@ -138,7 +139,19 @@
     "slotTaken": "Sajnáljuk, ezt az időpontot épp lefoglalták. Válassz másikat.",
     "boundToOther": "Már egy másik edzőhöz vagy regisztrálva.",
     "signInToBook": "A foglaláshoz jelentkezz be.",
-    "trainerNotFound": "Az edző nem található."
+    "trainerNotFound": "Az edző nem található.",
+    "consultationConfirmed": "Konzultáció lefoglalva! Az edződ jelentkezni fog.",
+    "alreadyDedicated": "Már egy edzővel dolgozol együtt.",
+    "notDedicated": "Előbb foglalj konzultációt ennél az edzőnél."
+  },
+  "trainers": {
+    "directoryTitle": "Edző keresése",
+    "directoryIntro": "Böngészd az edzőket és foglalj egy első konzultációt.",
+    "noTrainers": "Jelenleg egyetlen edző sem fogad új ügyfelet.",
+    "viewProfile": "Profil megtekintése",
+    "bookConsultation": "Konzultáció foglalása",
+    "consultationIntro": "Foglalj egy ingyenes első konzultációt. Minden idő brit idő szerint.",
+    "aboutTitle": "Bemutatkozás"
   },
   "billing": {
     "title": "Alkalmak és fizetés",
@@ -169,6 +182,14 @@
     "intro": "A hozzád regisztrált ügyfelek.",
     "noClients": "Még nincs ügyfeled. Oszd meg a foglalási linkedet.",
     "view": "Megnyitás",
+    "pendingTitle": "Függő konzultációk",
+    "activeTitle": "Ügyfeleid",
+    "noPending": "Nincs függő konzultáció.",
+    "consultationLabel": "Konzultáció",
+    "dedicate": "Dedikálás",
+    "decline": "Elutasítás",
+    "release": "Kapcsolat lezárása",
+    "releaseConfirm": "Lezárod a kapcsolatot ezzel az ügyféllel? A jövőbeli alkalmak lemondásra kerülnek.",
     "notesTitle": "Egészségügyi és fitnesz jegyzetek",
     "consentMissing": "Ez az ügyfél nem járult hozzá az egészségügyi adatok kezeléséhez, így a jegyzetek nem érhetők el.",
     "notePlaceholder": "Privát jegyzet az ügyfél egészségéről vagy fittségéről…",

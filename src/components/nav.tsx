@@ -20,15 +20,16 @@ export async function Nav() {
       { href: "/privacy", label: t("nav.privacy") },
     ];
   } else if (user?.role === "CLIENT") {
-    // Show a Book link to the client's trainer once they are bound to one.
+    // Dedicated clients get a Book link to their trainer; others get the
+    // public trainer directory to book an initial consultation.
     const client = await prisma.clientProfile.findUnique({
       where: { userId: user.id },
       select: { trainerId: true },
     });
     links = [
-      ...(client
-        ? [{ href: `/book/${client.trainerId}`, label: t("nav.book") }]
-        : []),
+      client?.trainerId
+        ? { href: `/book/${client.trainerId}`, label: t("nav.book") }
+        : { href: "/trainers", label: t("nav.findTrainer") },
       { href: "/my-bookings", label: t("nav.bookings") },
       { href: "/billing", label: t("nav.billing") },
       { href: "/privacy", label: t("nav.privacy") },

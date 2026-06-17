@@ -14,6 +14,7 @@
   },
   "nav": {
     "book": "Book",
+    "findTrainer": "Find a trainer",
     "bookings": "Bookings",
     "billing": "Payments",
     "privacy": "Privacy",
@@ -138,7 +139,19 @@
     "slotTaken": "Sorry, that slot was just taken. Please choose another.",
     "boundToOther": "You are already registered with another trainer.",
     "signInToBook": "Please sign in to book a session.",
-    "trainerNotFound": "Trainer not found."
+    "trainerNotFound": "Trainer not found.",
+    "consultationConfirmed": "Consultation booked! Your trainer will follow up.",
+    "alreadyDedicated": "You're already working with a trainer.",
+    "notDedicated": "Book a consultation with this trainer first."
+  },
+  "trainers": {
+    "directoryTitle": "Find a trainer",
+    "directoryIntro": "Browse trainers and book an initial consultation.",
+    "noTrainers": "No trainers are accepting new clients right now.",
+    "viewProfile": "View profile",
+    "bookConsultation": "Book a consultation",
+    "consultationIntro": "Book a free initial consultation. All times are shown in UK time.",
+    "aboutTitle": "About"
   },
   "billing": {
     "title": "Sessions & payment",
@@ -169,6 +182,14 @@
     "intro": "The clients registered with you.",
     "noClients": "No clients yet. Share your booking link to get started.",
     "view": "View",
+    "pendingTitle": "Pending consultations",
+    "activeTitle": "Your clients",
+    "noPending": "No pending consultations.",
+    "consultationLabel": "Consultation",
+    "dedicate": "Dedicate",
+    "decline": "Decline",
+    "release": "End relationship",
+    "releaseConfirm": "End the relationship with this client? Future sessions will be cancelled.",
     "notesTitle": "Health & fitness notes",
     "consentMissing": "This client has not consented to health-data processing, so notes are unavailable.",
     "notePlaceholder": "Add a private note about this client's health or fitness…",

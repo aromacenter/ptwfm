@@ -12,11 +12,13 @@ export function BookingPicker({
   slots,
   canBook,
   signedIn,
+  kind = "SESSION",
 }: {
   trainerId: string;
   slots: string[]; // ISO start instants
   canBook: boolean;
   signedIn: boolean;
+  kind?: "SESSION" | "CONSULTATION";
 }) {
   const t = useTranslations("booking");
   const locale = useLocale();
@@ -72,19 +74,25 @@ export function BookingPicker({
     const res = await fetch("/api/bookings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ trainerId, start: iso }),
+      body: JSON.stringify({ trainerId, start: iso, kind }),
     });
     setPending(null);
 
     if (res.ok) {
       setAvailable((prev) => prev.filter((s) => s !== iso));
-      setMessage({ kind: "ok", text: t("confirmed") });
+      setMessage({
+        kind: "ok",
+        text: kind === "CONSULTATION" ? t("consultationConfirmed") : t("confirmed"),
+      });
       return;
     }
     const data = (await res.json().catch(() => null)) as { error?: string } | null;
-    if (data?.error === "bound_to_other_trainer") {
-      setMessage({ kind: "error", text: t("boundToOther") });
-    } else if (data?.error === "slot_taken" || data?.error === "slot_unavailable") {
+    const err = data?.error;
+    if (err === "already_dedicated") {
+      setMessage({ kind: "error", text: t("alreadyDedicated") });
+    } else if (err === "not_dedicated") {
+      setMessage({ kind: "error", text: t("notDedicated") });
+    } else if (err === "slot_taken" || err === "slot_unavailable") {
       setAvailable((prev) => prev.filter((s) => s !== iso));
       setMessage({ kind: "error", text: t("slotTaken") });
     } else {

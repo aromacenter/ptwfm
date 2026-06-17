@@ -30,7 +30,9 @@ export default async function BillingPage({
     },
   });
 
-  if (!client) {
+  // Packages are priced by the dedicated trainer's rate; until a trainer
+  // dedicates the client there is no rate, so buying is not yet available.
+  if (!client || !client.trainer) {
     return (
       <main className="mx-auto w-full max-w-2xl flex-1 space-y-4 p-6">
         <h1 className="text-2xl font-semibold">{t("title")}</h1>

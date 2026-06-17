@@ -14,6 +14,7 @@ export const availabilityRuleSchema = z
 export const bookingSchema = z.object({
   trainerId: z.string().min(1),
   start: z.string().datetime(), // ISO 8601 UTC instant
+  kind: z.enum(["SESSION", "CONSULTATION"]).default("SESSION"),
 });
 
 export type AvailabilityRuleInput = z.infer<typeof availabilityRuleSchema>;

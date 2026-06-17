@@ -29,6 +29,28 @@ export async function getOwnedClient(
   };
 }
 
+/** The trainer profile id for a trainer user, or null. */
+export async function trainerProfileIdForUser(
+  userId: string,
+): Promise<string | null> {
+  const p = await prisma.trainerProfile.findUnique({
+    where: { userId },
+    select: { id: true },
+  });
+  return p?.id ?? null;
+}
+
+/** Whether the trainer has at least one consultation booked with the client. */
+export async function hasConsultationWith(
+  trainerId: string,
+  clientId: string,
+): Promise<boolean> {
+  const count = await prisma.appointment.count({
+    where: { trainerId, clientId, kind: "CONSULTATION" },
+  });
+  return count > 0;
+}
+
 /** Whether the client (by user id) currently consents to health-data processing. */
 export async function clientHasHealthConsent(
   clientUserId: string,

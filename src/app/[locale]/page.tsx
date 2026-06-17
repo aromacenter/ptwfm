@@ -21,7 +21,7 @@ export default async function HomePage({
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
-            href="/register"
+            href="/trainers"
             className="rounded-full bg-foreground px-6 py-3 text-background"
           >
             {t("home.ctaClient")}
