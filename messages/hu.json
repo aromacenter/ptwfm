@@ -17,9 +17,17 @@
     "bookings": "Foglalások",
     "billing": "Fizetés",
     "privacy": "Adatvédelem",
+    "dashboard": "Irányítópult",
     "availability": "Elérhetőség",
     "clients": "Ügyfelek",
     "insights": "Elemzés"
+  },
+  "dashboard": {
+    "title": "Irányítópult",
+    "upcoming": "Közelgő alkalmak",
+    "noUpcoming": "Még nincs közelgő alkalom.",
+    "manageAvailability": "Elérhetőség kezelése",
+    "viewClients": "Ügyfelek megnyitása"
   },
   "home": {
     "title": "Eddz okosabban. Foglalj online.",

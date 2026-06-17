@@ -17,9 +17,17 @@
     "bookings": "Bookings",
     "billing": "Payments",
     "privacy": "Privacy",
+    "dashboard": "Dashboard",
     "availability": "Availability",
     "clients": "Clients",
     "insights": "Insights"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "upcoming": "Upcoming sessions",
+    "noUpcoming": "No upcoming sessions yet.",
+    "manageAvailability": "Manage availability",
+    "viewClients": "View clients"
   },
   "home": {
     "title": "Train smarter. Book online.",

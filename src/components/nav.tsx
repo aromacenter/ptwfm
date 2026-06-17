@@ -12,6 +12,7 @@ export async function Nav() {
   let links: { href: string; label: string }[] = [];
   if (user?.role === "TRAINER") {
     links = [
+      { href: "/trainer/dashboard", label: t("nav.dashboard") },
       { href: "/trainer/availability", label: t("nav.availability") },
       { href: "/trainer/clients", label: t("nav.clients") },
       { href: "/trainer/insights", label: t("nav.insights") },
