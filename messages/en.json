@@ -50,6 +50,18 @@
     "manageAvailability": "Manage availability",
     "viewClients": "View clients"
   },
+  "trainerProfile": {
+    "title": "Public profile",
+    "intro": "This is what clients see in the directory and on your profile.",
+    "headline": "Headline",
+    "headlinePlaceholder": "e.g. Strength & conditioning coach",
+    "bio": "About you",
+    "bioPlaceholder": "Tell clients about your experience and approach…",
+    "acceptingClients": "Accepting new clients (listed publicly)",
+    "hourlyRate": "Session price (£)",
+    "save": "Save profile",
+    "saved": "Profile saved."
+  },
   "home": {
     "title": "Train smarter. Book online.",
     "subtitle": "The all-in-one platform for personal trainers and their clients.",

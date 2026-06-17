@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { formatDateTime } from "@/lib/i18n/format";
 import { CopyField } from "@/components/copy-field";
+import { TrainerProfileEditor } from "@/components/trainer-profile-editor";
 
 export default async function DashboardPage({
   params,
@@ -25,7 +26,13 @@ export default async function DashboardPage({
 
   const profile = await prisma.trainerProfile.findUnique({
     where: { userId: user.id },
-    select: { id: true },
+    select: {
+      id: true,
+      headline: true,
+      bio: true,
+      acceptingClients: true,
+      hourlyRatePence: true,
+    },
   });
 
   const upcoming = profile
@@ -60,6 +67,17 @@ export default async function DashboardPage({
           <p className="text-sm text-foreground/70">{tA("shareDesc")}</p>
           <CopyField value={bookingLink} />
         </section>
+      )}
+
+      {profile && (
+        <TrainerProfileEditor
+          initial={{
+            headline: profile.headline ?? "",
+            bio: profile.bio ?? "",
+            acceptingClients: profile.acceptingClients,
+            hourlyRatePence: profile.hourlyRatePence,
+          }}
+        />
       )}
 
       <section className="space-y-3">

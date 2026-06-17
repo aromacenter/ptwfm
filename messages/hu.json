@@ -50,6 +50,18 @@
     "manageAvailability": "Elérhetőség kezelése",
     "viewClients": "Ügyfelek megnyitása"
   },
+  "trainerProfile": {
+    "title": "Publikus profil",
+    "intro": "Ezt látják az ügyfelek a listában és a profilodon.",
+    "headline": "Mottó",
+    "headlinePlaceholder": "pl. Erő- és kondíció edző",
+    "bio": "Bemutatkozás",
+    "bioPlaceholder": "Mesélj a tapasztalatodról és a módszeredről…",
+    "acceptingClients": "Új ügyfeleket fogadok (publikusan listázva)",
+    "hourlyRate": "Alkalom ára (£)",
+    "save": "Profil mentése",
+    "saved": "Profil elmentve."
+  },
   "home": {
     "title": "Eddz okosabban. Foglalj online.",
     "subtitle": "Minden-egyben platform személyi edzőknek és ügyfeleiknek.",
