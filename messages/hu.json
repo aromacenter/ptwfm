@@ -13,6 +13,7 @@
     "language": "Nyelv"
   },
   "nav": {
+    "book": "Foglalás",
     "bookings": "Foglalások",
     "billing": "Fizetés",
     "privacy": "Adatvédelem",
@@ -93,7 +94,11 @@
     "add": "Órák hozzáadása",
     "remove": "Törlés",
     "noRules": "Még nincs beállított elérhetőség. Add hozzá az első idősávot fent.",
-    "added": "Elérhetőség frissítve."
+    "added": "Elérhetőség frissítve.",
+    "shareTitle": "A foglalási linked",
+    "shareDesc": "Oszd meg ezt a linket az ügyfelekkel, hogy foglalni tudjanak nálad.",
+    "copy": "Másolás",
+    "copied": "Másolva!"
   },
   "booking": {
     "title": "Időpontfoglalás",

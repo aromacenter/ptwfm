@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -8,21 +9,29 @@ export async function Nav() {
   const user = await getCurrentUser();
   const t = await getTranslations();
 
-  const links =
-    user?.role === "TRAINER"
-      ? [
-          { href: "/trainer/availability", label: t("nav.availability") },
-          { href: "/trainer/clients", label: t("nav.clients") },
-          { href: "/trainer/insights", label: t("nav.insights") },
-          { href: "/privacy", label: t("nav.privacy") },
-        ]
-      : user?.role === "CLIENT"
-        ? [
-            { href: "/my-bookings", label: t("nav.bookings") },
-            { href: "/billing", label: t("nav.billing") },
-            { href: "/privacy", label: t("nav.privacy") },
-          ]
-        : [];
+  let links: { href: string; label: string }[] = [];
+  if (user?.role === "TRAINER") {
+    links = [
+      { href: "/trainer/availability", label: t("nav.availability") },
+      { href: "/trainer/clients", label: t("nav.clients") },
+      { href: "/trainer/insights", label: t("nav.insights") },
+      { href: "/privacy", label: t("nav.privacy") },
+    ];
+  } else if (user?.role === "CLIENT") {
+    // Show a Book link to the client's trainer once they are bound to one.
+    const client = await prisma.clientProfile.findUnique({
+      where: { userId: user.id },
+      select: { trainerId: true },
+    });
+    links = [
+      ...(client
+        ? [{ href: `/book/${client.trainerId}`, label: t("nav.book") }]
+        : []),
+      { href: "/my-bookings", label: t("nav.bookings") },
+      { href: "/billing", label: t("nav.billing") },
+      { href: "/privacy", label: t("nav.privacy") },
+    ];
+  }
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-foreground/10 px-6 py-4">

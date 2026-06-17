@@ -13,6 +13,7 @@
     "language": "Language"
   },
   "nav": {
+    "book": "Book",
     "bookings": "Bookings",
     "billing": "Payments",
     "privacy": "Privacy",
@@ -93,7 +94,11 @@
     "add": "Add hours",
     "remove": "Remove",
     "noRules": "No availability set yet. Add your first time block above.",
-    "added": "Availability updated."
+    "added": "Availability updated.",
+    "shareTitle": "Your booking link",
+    "shareDesc": "Share this link with clients so they can book you.",
+    "copy": "Copy",
+    "copied": "Copied!"
   },
   "booking": {
     "title": "Book a session",
