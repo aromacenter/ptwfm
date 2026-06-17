@@ -16,13 +16,25 @@ import { getSetting, resolveIntegration } from "@/lib/settings";
 
 const mockedGetUser = vi.mocked(session.getCurrentUser);
 
-const adminUser = {
-  id: "admin1",
-  email: "admin@example.com",
-  name: "Admin",
-  role: "ADMIN" as const,
-  locale: "en",
-};
+// Creates a real ADMIN user (audit logs FK-reference User) and returns the
+// session shape the route expects.
+async function seedAdmin() {
+  const user = await prisma.user.create({
+    data: {
+      name: "Admin",
+      email: `admin-${Date.now()}-${Math.random()}@example.com`,
+      passwordHash: "x",
+      role: "ADMIN",
+    },
+  });
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: "ADMIN" as const,
+    locale: "en",
+  };
+}
 
 function postReq(key: string, value: string) {
   return new Request("http://localhost/api/admin/integrations", {
@@ -42,12 +54,18 @@ describe.runIf(runDbTests)("admin integrations (DB)", () => {
   });
 
   it("forbids non-admins", async () => {
-    mockedGetUser.mockResolvedValue({ ...adminUser, role: "CLIENT" });
+    mockedGetUser.mockResolvedValue({
+      id: "x",
+      email: "client@example.com",
+      name: "C",
+      role: "CLIENT",
+      locale: "en",
+    });
     expect((await integrationsGET()).status).toBe(403);
   });
 
   it("lists integration statuses for an admin", async () => {
-    mockedGetUser.mockResolvedValue(adminUser);
+    mockedGetUser.mockResolvedValue(await seedAdmin());
     const res = await integrationsGET();
     expect(res.status).toBe(200);
     const body = await res.json();
@@ -57,7 +75,7 @@ describe.runIf(runDbTests)("admin integrations (DB)", () => {
   });
 
   it("stores a secret encrypted (not as plaintext) and resolves it", async () => {
-    mockedGetUser.mockResolvedValue(adminUser);
+    mockedGetUser.mockResolvedValue(await seedAdmin());
     const res = await integrationsPOST(postReq("GEMINI_API_KEY", "secret-key-xyz"));
     expect(res.status).toBe(200);
 
@@ -71,7 +89,7 @@ describe.runIf(runDbTests)("admin integrations (DB)", () => {
   });
 
   it("stores a non-secret value in plaintext", async () => {
-    mockedGetUser.mockResolvedValue(adminUser);
+    mockedGetUser.mockResolvedValue(await seedAdmin());
     await integrationsPOST(postReq("GEMINI_MODEL", "gemini-2.0-pro"));
     const row = await prisma.setting.findUnique({
       where: { key: "GEMINI_MODEL" },
@@ -81,7 +99,7 @@ describe.runIf(runDbTests)("admin integrations (DB)", () => {
   });
 
   it("clears a setting when given an empty value", async () => {
-    mockedGetUser.mockResolvedValue(adminUser);
+    mockedGetUser.mockResolvedValue(await seedAdmin());
     await integrationsPOST(postReq("GEMINI_MODEL", "gemini-2.0-pro"));
     await integrationsPOST(postReq("GEMINI_MODEL", ""));
     expect(
@@ -90,7 +108,7 @@ describe.runIf(runDbTests)("admin integrations (DB)", () => {
   });
 
   it("rejects an unknown key", async () => {
-    mockedGetUser.mockResolvedValue(adminUser);
+    mockedGetUser.mockResolvedValue(await seedAdmin());
     expect((await integrationsPOST(postReq("EVIL_KEY", "x"))).status).toBe(400);
   });
 });
