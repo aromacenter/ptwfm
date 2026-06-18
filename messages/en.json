@@ -48,7 +48,11 @@
     "upcoming": "Upcoming sessions",
     "noUpcoming": "No upcoming sessions yet.",
     "manageAvailability": "Manage availability",
-    "viewClients": "View clients"
+    "viewClients": "View clients",
+    "toReview": "Sessions to review",
+    "noReview": "Nothing to review.",
+    "completed": "Completed",
+    "noShow": "No-show"
   },
   "trainerProfile": {
     "title": "Public profile",

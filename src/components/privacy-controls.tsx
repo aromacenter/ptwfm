@@ -87,9 +87,17 @@ export function PrivacyControls({
           <p className="mt-1 text-sm text-foreground/70">{t("exportDesc")}</p>
           <button
             type="button"
-            onClick={() => {
-              // API route returns a file (Content-Disposition: attachment).
-              window.location.href = "/api/gdpr/export";
+            onClick={async () => {
+              // POST (the export writes an audit entry); download the blob.
+              const res = await fetch("/api/gdpr/export", { method: "POST" });
+              if (!res.ok) return;
+              const blob = await res.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "pt-management-data-export.json";
+              a.click();
+              URL.revokeObjectURL(url);
             }}
             className="mt-3 inline-block rounded-full border border-foreground/20 px-4 py-2 text-sm"
           >

@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { formatDateTime } from "@/lib/i18n/format";
 import { CopyField } from "@/components/copy-field";
 import { TrainerProfileEditor } from "@/components/trainer-profile-editor";
+import { AppointmentActions } from "@/components/appointment-actions";
 
 export default async function DashboardPage({
   params,
@@ -45,6 +46,25 @@ export default async function DashboardPage({
           startAt: { gte: new Date() },
         },
         orderBy: { startAt: "asc" },
+        take: 10,
+        select: {
+          id: true,
+          startAt: true,
+          client: { select: { user: { select: { name: true } } } },
+        },
+      })
+    : [];
+
+  // Past sessions still marked BOOKED — the trainer reviews them as completed
+  // or no-show.
+  const toReview = profile
+    ? await prisma.appointment.findMany({
+        where: {
+          trainerId: profile.id,
+          status: "BOOKED",
+          startAt: { lt: new Date() },
+        },
+        orderBy: { startAt: "desc" },
         take: 10,
         select: {
           id: true,
@@ -106,6 +126,28 @@ export default async function DashboardPage({
           </ul>
         )}
       </section>
+
+      {toReview.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-lg font-medium">{t("toReview")}</h2>
+          <ul className="divide-y divide-foreground/10 rounded border border-foreground/15">
+            {toReview.map((a) => (
+              <li
+                key={a.id}
+                className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm"
+              >
+                <span>
+                  {a.client.user.name}
+                  <span className="block text-xs text-foreground/60">
+                    {formatDateTime(a.startAt, locale)}
+                  </span>
+                </span>
+                <AppointmentActions id={a.id} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="flex flex-wrap gap-3">
         <Link

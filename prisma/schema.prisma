@@ -380,6 +380,14 @@ model WebhookEvent {
   processedAt DateTime @default(now())
 }
 
+// Fixed-window rate limiting (e.g. login/register). Survives restarts and is
+// shared across instances, unlike the in-memory limiter used for AI endpoints.
+model RateLimit {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+}
+
 // Key-value app settings (e.g. integration credentials configured by an admin).
 // Secret values are stored encrypted (AES-256-GCM); `encrypted` marks those.
 model Setting {

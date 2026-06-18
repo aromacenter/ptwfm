@@ -4,6 +4,7 @@ import type { Role } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { verifyPassword } from "@/lib/auth/password";
 import { loginSchema } from "@/lib/validation/auth";
+import { rateLimit } from "@/lib/ratelimit-db";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
@@ -17,6 +18,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       authorize: async (credentials) => {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
+
+        // Throttle attempts per email to deter brute force / credential
+        // stuffing (DB-backed, shared across instances).
+        const email = parsed.data.email.toLowerCase();
+        if (!(await rateLimit(`login:${email}`, 10, 15 * 60_000))) {
+          return null;
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email },

@@ -48,7 +48,11 @@
     "upcoming": "Közelgő alkalmak",
     "noUpcoming": "Még nincs közelgő alkalom.",
     "manageAvailability": "Elérhetőség kezelése",
-    "viewClients": "Ügyfelek megnyitása"
+    "viewClients": "Ügyfelek megnyitása",
+    "toReview": "Felülvizsgálandó alkalmak",
+    "noReview": "Nincs felülvizsgálandó.",
+    "completed": "Megtörtént",
+    "noShow": "Nem jelent meg"
   },
   "trainerProfile": {
     "title": "Publikus profil",

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
-import { validateImageUpload } from "@/lib/validation/image";
+import { validateImageUpload, sniffImageType } from "@/lib/validation/image";
 
 export const runtime = "nodejs";
 
@@ -24,9 +24,17 @@ export async function POST(request: Request) {
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
+
+  // Verify the real content matches an allowed image (defends against a
+  // spoofed Content-Type). Store the sniffed type, not the client-claimed one.
+  const realType = sniffImageType(bytes);
+  if (!realType) {
+    return NextResponse.json({ error: "type" }, { status: 400 });
+  }
+
   await prisma.trainerProfile.update({
     where: { userId: user.id },
-    data: { photoData: bytes, photoMime: file.type },
+    data: { photoData: bytes, photoMime: realType },
   });
 
   return NextResponse.json({ ok: true });

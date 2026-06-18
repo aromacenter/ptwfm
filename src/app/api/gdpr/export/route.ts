@@ -7,7 +7,8 @@ import { buildExportPackage } from "@/lib/gdpr/export";
 export const runtime = "nodejs";
 
 // UK GDPR right of access / portability: download all personal data as JSON.
-export async function GET() {
+// POST (not GET) because it writes an audit-log entry (no side effects on GET).
+export async function POST() {
   const sessionUser = await getCurrentUser();
   if (!sessionUser) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });

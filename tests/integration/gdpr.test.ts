@@ -11,7 +11,7 @@ import { prisma } from "@/lib/db";
 import * as session from "@/lib/auth/session";
 import { POST as registerPOST } from "@/app/api/auth/register/route";
 import { POST as consentPOST } from "@/app/api/gdpr/consent/route";
-import { GET as exportGET } from "@/app/api/gdpr/export/route";
+import { POST as exportPOST } from "@/app/api/gdpr/export/route";
 import { POST as erasurePOST } from "@/app/api/gdpr/erasure/route";
 
 const mockedGetUser = vi.mocked(session.getCurrentUser);
@@ -157,7 +157,7 @@ describe.runIf(runDbTests)("GDPR flows (DB)", () => {
       locale: "en",
     });
 
-    const res = await exportGET();
+    const res = await exportPOST();
     expect(res.status).toBe(200);
     const text = await res.text();
     expect(text).toContain("export@example.com");

@@ -32,7 +32,7 @@ export function ClientActions({
           type="button"
           disabled={pending}
           onClick={() => call("dedicate")}
-          className="rounded-full bg-foreground px-3 py-1 text-sm text-background disabled:opacity-50"
+          className="rounded-full bg-foreground px-3 py-2 text-sm text-background disabled:opacity-50"
         >
           {t("dedicate")}
         </button>
@@ -40,7 +40,7 @@ export function ClientActions({
           type="button"
           disabled={pending}
           onClick={() => call("release")}
-          className="rounded-full border border-foreground/20 px-3 py-1 text-sm disabled:opacity-50"
+          className="rounded-full border border-foreground/20 px-3 py-2 text-sm disabled:opacity-50"
         >
           {t("decline")}
         </button>
@@ -53,7 +53,7 @@ export function ClientActions({
       type="button"
       disabled={pending}
       onClick={() => call("release")}
-      className="shrink-0 rounded-full border border-red-300 px-3 py-1 text-sm text-red-700 disabled:opacity-50"
+      className="shrink-0 rounded-full border border-red-300 px-3 py-2 text-sm text-red-700 disabled:opacity-50"
     >
       {t("release")}
     </button>

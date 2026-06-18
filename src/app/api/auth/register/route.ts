@@ -3,10 +3,16 @@ import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth/password";
 import { registerSchema } from "@/lib/validation/auth";
 import { CONSENT_VERSION } from "@/lib/gdpr/consent";
+import { rateLimit, clientIp } from "@/lib/ratelimit-db";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  // Throttle sign-ups per IP to deter abuse / enumeration.
+  if (!(await rateLimit(`register:${clientIp(request)}`, 10, 10 * 60_000))) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   let body: unknown;
   try {
     body = await request.json();

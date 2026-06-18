@@ -41,7 +41,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "already_started" }, { status: 409 });
   }
 
-  const outcome = cancellationOutcome(appt.startAt);
+  // Consultations are free, so cancelling one is never charged regardless of
+  // timing. Only sessions are subject to the 24-hour fee.
+  const outcome =
+    appt.kind === "CONSULTATION" ? "FREE" : cancellationOutcome(appt.startAt);
   const clientId = appt.client.id;
 
   // Apply the booking state change. The late fee (off-session charge) is

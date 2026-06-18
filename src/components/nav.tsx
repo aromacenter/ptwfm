@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { isAdmin } from "@/lib/auth/admin";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { SignOutButton } from "@/components/sign-out-button";
+import { MobileMenu } from "@/components/mobile-menu";
 
 export async function Nav() {
   const user = await getCurrentUser();
@@ -45,11 +46,13 @@ export async function Nav() {
   }
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-foreground/10 px-6 py-4">
+    <header className="relative flex items-center justify-between gap-3 border-b border-foreground/10 px-4 py-4 sm:px-6">
       <Link href="/" className="text-lg font-semibold">
         {t("common.appName")}
       </Link>
-      <nav className="flex flex-wrap items-center gap-4 text-sm">
+
+      {/* Desktop nav */}
+      <nav className="hidden items-center gap-4 text-sm sm:flex">
         {links.map((l) => (
           <Link key={l.href} href={l.href} className="hover:underline">
             {l.label}
@@ -64,6 +67,9 @@ export async function Nav() {
           </Link>
         )}
       </nav>
+
+      {/* Mobile nav */}
+      <MobileMenu links={links} signedIn={!!user} />
     </header>
   );
 }

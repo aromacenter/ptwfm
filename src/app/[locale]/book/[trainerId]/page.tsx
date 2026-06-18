@@ -1,8 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
+import { redirect } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getTrainerSlots } from "@/lib/booking/service";
 import { BookingPicker } from "@/components/booking-picker";
+
+export const dynamic = "force-dynamic";
 
 const DAYS_AHEAD = 14;
 
@@ -28,15 +31,30 @@ export default async function BookPage({
     );
   }
 
+  // This page is for booking regular sessions with the client's dedicated
+  // trainer. Anyone not dedicated to this trainer is sent to the public
+  // profile to book a consultation instead.
+  const user = await getCurrentUser();
+  if (user?.role === "CLIENT") {
+    const client = await prisma.clientProfile.findUnique({
+      where: { userId: user.id },
+      select: { trainerId: true },
+    });
+    if (client?.trainerId !== trainerId) {
+      redirect({ href: `/trainers/${trainerId}`, locale });
+      return null;
+    }
+  } else {
+    redirect({ href: `/trainers/${trainerId}`, locale });
+    return null;
+  }
+
   const now = new Date();
   const to = new Date(now.getTime() + DAYS_AHEAD * 24 * 60 * 60 * 1000);
   const slots = await getTrainerSlots(trainerId, now, to, now);
   const available = slots
     .filter((s) => !s.booked)
     .map((s) => s.start.toISOString());
-
-  const user = await getCurrentUser();
-  const isClient = user?.role === "CLIENT" || !user; // clients (or guests who can sign in)
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6">
@@ -49,8 +67,9 @@ export default async function BookPage({
       <BookingPicker
         trainerId={trainerId}
         slots={available}
-        canBook={isClient}
-        signedIn={!!user}
+        canBook={true}
+        signedIn={true}
+        kind="SESSION"
       />
     </main>
   );

@@ -119,7 +119,7 @@ export function AvailabilityEditor({ initialRules }: { initialRules: Rule[] }) {
                 type="button"
                 onClick={() => remove(r.id)}
                 disabled={pending}
-                className="rounded-full border border-foreground/20 px-3 py-1 disabled:opacity-50"
+                className="rounded-full border border-foreground/20 px-3 py-2 disabled:opacity-50"
               >
                 {t("remove")}
               </button>

@@ -76,7 +76,7 @@ export function MyBookings({ bookings }: { bookings: Booking[] }) {
               type="button"
               onClick={() => cancel(b.id)}
               disabled={pending === b.id}
-              className="rounded-full border border-foreground/20 px-3 py-1 disabled:opacity-50"
+              className="rounded-full border border-foreground/20 px-3 py-2 disabled:opacity-50"
             >
               {pending === b.id ? t("cancelling") : t("cancel")}
             </button>

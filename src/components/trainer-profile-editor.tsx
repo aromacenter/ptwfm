@@ -103,7 +103,7 @@ export function TrainerProfileEditor({
               type="button"
               disabled={uploading}
               onClick={() => fileRef.current?.click()}
-              className="rounded-full border border-foreground/20 px-3 py-1 text-sm disabled:opacity-50"
+              className="rounded-full border border-foreground/20 px-3 py-2 text-sm disabled:opacity-50"
             >
               {t("uploadPhoto")}
             </button>
@@ -112,7 +112,7 @@ export function TrainerProfileEditor({
                 type="button"
                 disabled={uploading}
                 onClick={removePhoto}
-                className="rounded-full border border-foreground/20 px-3 py-1 text-sm disabled:opacity-50"
+                className="rounded-full border border-foreground/20 px-3 py-2 text-sm disabled:opacity-50"
               >
                 {t("removePhoto")}
               </button>

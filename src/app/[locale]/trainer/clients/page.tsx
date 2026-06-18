@@ -101,7 +101,7 @@ export default async function ClientsPage({
                 <div className="flex shrink-0 items-center gap-2">
                   <Link
                     href={`/trainer/clients/${c.id}`}
-                    className="rounded-full border border-foreground/20 px-3 py-1"
+                    className="rounded-full border border-foreground/20 px-3 py-2"
                   >
                     {t("view")}
                   </Link>
