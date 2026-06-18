@@ -60,7 +60,13 @@
     "acceptingClients": "Új ügyfeleket fogadok (publikusan listázva)",
     "hourlyRate": "Alkalom ára (£)",
     "save": "Profil mentése",
-    "saved": "Profil elmentve."
+    "saved": "Profil elmentve.",
+    "photoTitle": "Profilkép",
+    "uploadPhoto": "Kép feltöltése",
+    "removePhoto": "Eltávolítás",
+    "photoHint": "JPG, PNG vagy WebP, max 2 MB.",
+    "photoTooLarge": "Túl nagy a kép (max 2 MB).",
+    "photoWrongType": "Használj JPG, PNG vagy WebP képet."
   },
   "home": {
     "title": "Eddz okosabban. Foglalj online.",

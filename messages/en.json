@@ -60,7 +60,13 @@
     "acceptingClients": "Accepting new clients (listed publicly)",
     "hourlyRate": "Session price (£)",
     "save": "Save profile",
-    "saved": "Profile saved."
+    "saved": "Profile saved.",
+    "photoTitle": "Profile photo",
+    "uploadPhoto": "Upload photo",
+    "removePhoto": "Remove",
+    "photoHint": "JPG, PNG or WebP, up to 2 MB.",
+    "photoTooLarge": "Image too large (max 2 MB).",
+    "photoWrongType": "Use a JPG, PNG or WebP image."
   },
   "home": {
     "title": "Train smarter. Book online.",

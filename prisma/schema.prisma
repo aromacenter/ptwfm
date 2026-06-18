@@ -116,6 +116,8 @@ model TrainerProfile {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   bio           String?
   headline      String? // short public tagline shown in the directory
+  photoData     Bytes? // profile photo bytes (served via API)
+  photoMime     String? // photo mime type, e.g. image/jpeg
   acceptingClients Boolean @default(true) // shown publicly + open to consultations
   timezone      String   @default("Europe/London")
   hourlyRatePence Int    @default(0) // GBP stored in pence

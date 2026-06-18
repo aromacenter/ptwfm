@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getTrainerSlots } from "@/lib/booking/service";
 import { BookingPicker } from "@/components/booking-picker";
+import { Avatar } from "@/components/avatar";
 
 // Reads live availability + the viewer's session on each request.
 export const dynamic = "force-dynamic";
@@ -21,7 +22,14 @@ export default async function TrainerProfilePage({
 
   const trainer = await prisma.trainerProfile.findUnique({
     where: { id: trainerId },
-    include: { user: { select: { name: true } } },
+    select: {
+      acceptingClients: true,
+      bio: true,
+      headline: true,
+      photoMime: true,
+      updatedAt: true,
+      user: { select: { name: true } },
+    },
   });
 
   if (!trainer || !trainer.acceptingClients) {
@@ -46,42 +54,60 @@ export default async function TrainerProfilePage({
     });
     dedicated = !!client?.trainerId;
   }
-  // Clients who are not yet dedicated (or guests who can sign in) may book.
   const canBook = !user || (user.role === "CLIENT" && !dedicated);
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">{trainer.user.name}</h1>
-        {trainer.headline && (
-          <p className="text-foreground/70">{trainer.headline}</p>
-        )}
-      </header>
+    <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-4 sm:p-6">
+      {/* Profile header card */}
+      <section className="overflow-hidden rounded-2xl border border-foreground/10 shadow-sm">
+        <div className="h-28 bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-500" />
+        <div className="px-6 pb-6">
+          <div className="-mt-12 flex items-end gap-4">
+            <Avatar
+              name={trainer.user.name}
+              trainerId={trainerId}
+              hasPhoto={!!trainer.photoMime}
+              size={96}
+              version={trainer.updatedAt.getTime()}
+            />
+            <div className="pb-1">
+              <h1 className="text-2xl font-bold">{trainer.user.name}</h1>
+              {trainer.headline && (
+                <p className="text-foreground/70">{trainer.headline}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {trainer.bio && (
-        <section className="space-y-1">
-          <h2 className="text-sm font-medium text-foreground/80">
+        <section className="rounded-xl border border-foreground/10 p-5">
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-foreground/60">
             {t("aboutTitle")}
           </h2>
-          <p className="text-sm whitespace-pre-wrap text-foreground/80">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/85">
             {trainer.bio}
           </p>
         </section>
       )}
 
-      <section className="space-y-3">
-        <h2 className="text-lg font-medium">{t("bookConsultation")}</h2>
-        <p className="text-sm text-foreground/70">{t("consultationIntro")}</p>
+      <section className="rounded-xl border border-foreground/10 p-5">
+        <h2 className="text-lg font-semibold">{t("bookConsultation")}</h2>
+        <p className="mt-1 text-sm text-foreground/70">
+          {t("consultationIntro")}
+        </p>
         {dedicated && (
-          <p className="text-sm text-amber-700">{tb("alreadyDedicated")}</p>
+          <p className="mt-2 text-sm text-amber-700">{tb("alreadyDedicated")}</p>
         )}
-        <BookingPicker
-          trainerId={trainerId}
-          slots={available}
-          canBook={canBook}
-          signedIn={!!user}
-          kind="CONSULTATION"
-        />
+        <div className="mt-4">
+          <BookingPicker
+            trainerId={trainerId}
+            slots={available}
+            canBook={canBook}
+            signedIn={!!user}
+            kind="CONSULTATION"
+          />
+        </div>
       </section>
     </main>
   );

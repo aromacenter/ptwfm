@@ -1,11 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { Avatar } from "@/components/avatar";
+import { validateImageUpload } from "@/lib/validation/image";
 
 export function TrainerProfileEditor({
+  trainerId,
+  name,
+  hasPhoto,
+  photoVersion,
   initial,
 }: {
+  trainerId: string;
+  name: string;
+  hasPhoto: boolean;
+  photoVersion: number;
   initial: {
     headline: string;
     bio: string;
@@ -14,12 +25,17 @@ export function TrainerProfileEditor({
   };
 }) {
   const t = useTranslations("trainerProfile");
+  const router = useRouter();
+  const fileRef = useRef<HTMLInputElement>(null);
+
   const [headline, setHeadline] = useState(initial.headline);
   const [bio, setBio] = useState(initial.bio);
   const [accepting, setAccepting] = useState(initial.acceptingClients);
   const [rate, setRate] = useState((initial.hourlyRatePence / 100).toFixed(2));
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   async function save() {
     setPending(true);
@@ -38,11 +54,84 @@ export function TrainerProfileEditor({
     if (res.ok) setSaved(true);
   }
 
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoError(null);
+    const check = validateImageUpload(file.type, file.size);
+    if (!check.ok) {
+      setPhotoError(check.error === "size" ? t("photoTooLarge") : t("photoWrongType"));
+      return;
+    }
+    setUploading(true);
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/trainer/profile/photo", {
+      method: "POST",
+      body: form,
+    });
+    setUploading(false);
+    if (res.ok) router.refresh();
+  }
+
+  async function removePhoto() {
+    setUploading(true);
+    const res = await fetch("/api/trainer/profile/photo", { method: "DELETE" });
+    setUploading(false);
+    if (res.ok) router.refresh();
+  }
+
   return (
-    <div className="space-y-3 rounded border border-foreground/15 p-4">
+    <div className="space-y-4 rounded border border-foreground/15 p-4">
       <div className="space-y-1">
         <h2 className="font-medium">{t("title")}</h2>
         <p className="text-sm text-foreground/70">{t("intro")}</p>
+      </div>
+
+      {/* Photo */}
+      <div className="flex items-center gap-4">
+        <Avatar
+          name={name}
+          trainerId={trainerId}
+          hasPhoto={hasPhoto}
+          size={72}
+          version={photoVersion}
+        />
+        <div className="space-y-1">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={uploading}
+              onClick={() => fileRef.current?.click()}
+              className="rounded-full border border-foreground/20 px-3 py-1 text-sm disabled:opacity-50"
+            >
+              {t("uploadPhoto")}
+            </button>
+            {hasPhoto && (
+              <button
+                type="button"
+                disabled={uploading}
+                onClick={removePhoto}
+                className="rounded-full border border-foreground/20 px-3 py-1 text-sm disabled:opacity-50"
+              >
+                {t("removePhoto")}
+              </button>
+            )}
+          </div>
+          <p className="text-xs text-foreground/60">{t("photoHint")}</p>
+          {photoError && (
+            <p role="alert" className="text-xs text-red-600">
+              {photoError}
+            </p>
+          )}
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={onFile}
+        />
       </div>
 
       <label className="block space-y-1 text-sm">
