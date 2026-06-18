@@ -114,16 +114,14 @@ export default async function TrainerProfilePage({
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground/60">
             {t("specialtiesTitle")}
           </h2>
-          <div className="flex flex-wrap gap-2">
+          <ul className="space-y-1.5 text-sm text-foreground/85">
             {trainer.specialties.map((s) => (
-              <span
-                key={s}
-                className="rounded-lg bg-foreground/10 px-3 py-1.5 text-sm"
-              >
+              <li key={s} className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
                 {s}
-              </span>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
       )}
 
