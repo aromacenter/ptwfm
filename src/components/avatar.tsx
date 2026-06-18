@@ -32,7 +32,7 @@ export function Avatar({
         src={src}
         alt={name}
         style={dimension}
-        className="object-cover ring-1 ring-foreground/10"
+        className="block object-cover object-top ring-1 ring-foreground/10"
       />
     );
   }

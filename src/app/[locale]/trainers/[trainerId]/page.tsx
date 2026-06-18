@@ -66,30 +66,29 @@ export default async function TrainerProfilePage({
           </span>
         </div>
         <div className="px-6 pb-6">
-          <div className="-mt-16 flex flex-col items-center gap-3 text-center sm:-mt-14 sm:flex-row sm:items-end sm:gap-5 sm:text-left">
-            <div className="rounded-2xl shadow-lg ring-4 ring-background">
-              <Avatar
-                name={trainer.user.name}
-                trainerId={trainerId}
-                hasPhoto={!!trainer.photoMime}
-                size={112}
-                version={trainer.updatedAt.getTime()}
-              />
-            </div>
-            <div className="space-y-1 pb-1">
-              <h1 className="text-2xl font-bold sm:text-3xl">
-                {trainer.user.name}
-              </h1>
-              {trainer.headline && (
-                <p className="text-foreground/80">{trainer.headline}</p>
-              )}
-              {trainer.acceptingClients && (
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  {t("acceptingBadge")}
-                </span>
-              )}
-            </div>
+          {/* Avatar overlaps the banner; the text sits below it (readable). */}
+          <div className="-mt-12 inline-block rounded-2xl shadow-lg ring-4 ring-background">
+            <Avatar
+              name={trainer.user.name}
+              trainerId={trainerId}
+              hasPhoto={!!trainer.photoMime}
+              size={112}
+              version={trainer.updatedAt.getTime()}
+            />
+          </div>
+          <div className="mt-3 space-y-1.5">
+            <h1 className="text-2xl font-bold sm:text-3xl">
+              {trainer.user.name}
+            </h1>
+            {trainer.headline && (
+              <p className="text-foreground/80">{trainer.headline}</p>
+            )}
+            {trainer.acceptingClients && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                {t("acceptingBadge")}
+              </span>
+            )}
           </div>
         </div>
       </section>
