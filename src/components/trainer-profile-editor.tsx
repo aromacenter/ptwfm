@@ -37,6 +37,7 @@ export function TrainerProfileEditor({
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const [displayName, setDisplayName] = useState(name);
   const [headline, setHeadline] = useState(initial.headline);
   const [bio, setBio] = useState(initial.bio);
   const [specialtiesText, setSpecialtiesText] = useState(
@@ -59,6 +60,7 @@ export function TrainerProfileEditor({
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        name: displayName,
         headline,
         bio,
         specialties: toLines(specialtiesText),
@@ -108,7 +110,7 @@ export function TrainerProfileEditor({
       {/* Photo */}
       <div className="flex items-center gap-4">
         <Avatar
-          name={name}
+          name={displayName}
           trainerId={trainerId}
           hasPhoto={hasPhoto}
           size={72}
@@ -150,6 +152,16 @@ export function TrainerProfileEditor({
           onChange={onFile}
         />
       </div>
+
+      <label className="block space-y-1 text-sm">
+        <span>{t("name")}</span>
+        <input
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+          maxLength={100}
+          className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
+        />
+      </label>
 
       <label className="block space-y-1 text-sm">
         <span>{t("headline")}</span>

@@ -3,6 +3,7 @@ import { trainerProfileSchema } from "@/lib/validation/trainer";
 
 describe("trainerProfileSchema", () => {
   const base = {
+    name: "Sam Coach",
     headline: "Coach",
     bio: "Experienced trainer.",
     acceptingClients: true,
@@ -11,6 +12,12 @@ describe("trainerProfileSchema", () => {
 
   it("accepts a valid profile", () => {
     expect(trainerProfileSchema.safeParse(base).success).toBe(true);
+  });
+
+  it("rejects an empty name", () => {
+    expect(trainerProfileSchema.safeParse({ ...base, name: "  " }).success).toBe(
+      false,
+    );
   });
 
   it("allows empty headline and bio", () => {

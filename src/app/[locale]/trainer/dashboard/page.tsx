@@ -37,6 +37,7 @@ export default async function DashboardPage({
       hourlyRatePence: true,
       photoMime: true,
       updatedAt: true,
+      user: { select: { name: true } },
     },
   });
 
@@ -96,7 +97,7 @@ export default async function DashboardPage({
       {profile && (
         <TrainerProfileEditor
           trainerId={profile.id}
-          name={user.name ?? user.email}
+          name={profile.user.name}
           hasPhoto={!!profile.photoMime}
           photoVersion={profile.updatedAt.getTime()}
           initial={{

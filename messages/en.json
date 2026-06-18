@@ -57,6 +57,7 @@
   "trainerProfile": {
     "title": "Public profile",
     "intro": "This is what clients see in the directory and on your profile.",
+    "name": "Name",
     "headline": "Headline",
     "headlinePlaceholder": "e.g. Strength & conditioning coach",
     "bio": "About you",

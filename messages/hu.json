@@ -57,6 +57,7 @@
   "trainerProfile": {
     "title": "Publikus profil",
     "intro": "Ezt látják az ügyfelek a listában és a profilodon.",
+    "name": "Név",
     "headline": "Mottó",
     "headlinePlaceholder": "pl. Erő- és kondíció edző",
     "bio": "Bemutatkozás",

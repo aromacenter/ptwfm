@@ -54,6 +54,7 @@ describe.runIf(runDbTests)("trainer profile (DB)", () => {
     const trainerId = await makeTrainer();
     const res = await profilePOST(
       req({
+        name: "Renamed Coach",
         headline: "Strength coach",
         bio: "10 years experience.",
         acceptingClients: true,
@@ -64,16 +65,18 @@ describe.runIf(runDbTests)("trainer profile (DB)", () => {
 
     const profile = await prisma.trainerProfile.findUnique({
       where: { id: trainerId },
+      include: { user: { select: { name: true } } },
     });
     expect(profile?.headline).toBe("Strength coach");
     expect(profile?.hourlyRatePence).toBe(5500);
     expect(profile?.acceptingClients).toBe(true);
+    expect(profile?.user.name).toBe("Renamed Coach");
   });
 
   it("stores empty headline/bio as null", async () => {
     const trainerId = await makeTrainer();
     await profilePOST(
-      req({ headline: "", bio: "", acceptingClients: false, hourlyRatePence: 0 }),
+      req({ name: "Sam", headline: "", bio: "", acceptingClients: false, hourlyRatePence: 0 }),
     );
     const profile = await prisma.trainerProfile.findUnique({
       where: { id: trainerId },
@@ -92,7 +95,7 @@ describe.runIf(runDbTests)("trainer profile (DB)", () => {
       locale: "en",
     });
     const res = await profilePOST(
-      req({ headline: "", bio: "", acceptingClients: true, hourlyRatePence: 0 }),
+      req({ name: "X", headline: "", bio: "", acceptingClients: true, hourlyRatePence: 0 }),
     );
     expect(res.status).toBe(403);
   });

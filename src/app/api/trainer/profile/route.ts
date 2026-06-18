@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
   const {
+    name,
     headline,
     bio,
     specialties,
@@ -27,17 +28,20 @@ export async function POST(request: Request) {
     hourlyRatePence,
   } = parsed.data;
 
-  await prisma.trainerProfile.update({
-    where: { userId: user.id },
-    data: {
-      headline: headline || null,
-      bio: bio || null,
-      specialties,
-      qualifications,
-      acceptingClients,
-      hourlyRatePence,
-    },
-  });
+  await prisma.$transaction([
+    prisma.user.update({ where: { id: user.id }, data: { name } }),
+    prisma.trainerProfile.update({
+      where: { userId: user.id },
+      data: {
+        headline: headline || null,
+        bio: bio || null,
+        specialties,
+        qualifications,
+        acceptingClients,
+        hourlyRatePence,
+      },
+    }),
+  ]);
 
   return NextResponse.json({ ok: true });
 }
