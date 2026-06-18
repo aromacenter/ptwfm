@@ -118,7 +118,7 @@ export default async function TrainerProfilePage({
             {trainer.specialties.map((s) => (
               <span
                 key={s}
-                className="rounded-full bg-foreground/10 px-3 py-1 text-sm"
+                className="rounded-lg bg-foreground/10 px-3 py-1.5 text-sm"
               >
                 {s}
               </span>
