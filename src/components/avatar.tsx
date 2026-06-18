@@ -22,7 +22,8 @@ export function Avatar({
   size?: number;
   version?: string | number;
 }) {
-  const dimension = { width: size, height: size };
+  // Rounded-square (product-image style); radius scales with size.
+  const dimension = { width: size, height: size, borderRadius: Math.round(size * 0.16) };
   if (hasPhoto) {
     const src = `/api/trainers/${trainerId}/photo${version ? `?v=${version}` : ""}`;
     return (
@@ -31,14 +32,14 @@ export function Avatar({
         src={src}
         alt={name}
         style={dimension}
-        className="rounded-full object-cover ring-2 ring-background"
+        className="object-cover ring-1 ring-foreground/10"
       />
     );
   }
   return (
     <div
       style={dimension}
-      className="flex items-center justify-center rounded-full bg-foreground/10 font-semibold text-foreground/60"
+      className="flex items-center justify-center bg-foreground/10 font-semibold text-foreground/60"
       aria-label={name}
     >
       <span style={{ fontSize: size / 2.8 }}>{initials(name)}</span>

@@ -54,12 +54,20 @@ export default async function TrainerProfilePage({
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-4 sm:p-6">
       {/* Profile header card */}
       <section className="overflow-hidden rounded-2xl border border-foreground/10 shadow-sm">
-        <div className="relative h-36 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600">
+        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.25),transparent_60%)]" />
+          {/* Unique "signature" watermark from the trainer's name. */}
+          <span
+            className="pointer-events-none absolute -right-2 bottom-1 max-w-full -rotate-6 select-none truncate pr-4 text-5xl font-semibold italic text-white/20 sm:text-6xl"
+            style={{ fontFamily: '"Segoe Script","Brush Script MT",cursive' }}
+            aria-hidden="true"
+          >
+            {trainer.user.name}
+          </span>
         </div>
         <div className="px-6 pb-6">
           <div className="-mt-16 flex flex-col items-center gap-3 text-center sm:-mt-14 sm:flex-row sm:items-end sm:gap-5 sm:text-left">
-            <div className="rounded-full shadow-lg ring-4 ring-background">
+            <div className="rounded-2xl shadow-lg ring-4 ring-background">
               <Avatar
                 name={trainer.user.name}
                 trainerId={trainerId}
