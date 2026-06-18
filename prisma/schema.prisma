@@ -118,6 +118,7 @@ model TrainerProfile {
   headline      String? // short public tagline shown in the directory
   specialties    String[] @default([]) // specialist areas (public)
   qualifications String[] @default([]) // qualifications (public)
+  achievements   String[] @default([]) // results / achievements (public)
   photoData     Bytes? // profile photo bytes (served via API)
   photoMime     String? // photo mime type, e.g. image/jpeg
   acceptingClients Boolean @default(true) // shown publicly + open to consultations

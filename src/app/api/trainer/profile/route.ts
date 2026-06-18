@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     bio,
     specialties,
     qualifications,
+    achievements,
     acceptingClients,
     hourlyRatePence,
   } = parsed.data;
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
           bio: bio || null,
           specialties,
           qualifications,
+          achievements,
           acceptingClients,
           hourlyRatePence,
         },

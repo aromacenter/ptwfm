@@ -66,6 +66,8 @@
     "specialtiesPlaceholder": "Soronként egy, pl. Fogyás\nErőnléti edzés\nRehabilitáció",
     "qualifications": "Képesítések",
     "qualificationsPlaceholder": "Soronként egy, pl. Level 3 személyi edző\nTáplálkozási tanácsadó",
+    "achievements": "Elért eredmények",
+    "achievementsPlaceholder": "Soronként egy, pl. 50+ ügyfél elérte a célját\nMaraton teljesítése",
     "acceptingClients": "Új ügyfeleket fogadok (publikusan listázva)",
     "hourlyRate": "Alkalom ára (£)",
     "save": "Profil mentése",
@@ -184,6 +186,7 @@
     "aboutTitle": "Bemutatkozás",
     "specialtiesTitle": "Szakterületek",
     "qualificationsTitle": "Képesítések",
+    "achievementsTitle": "Elért eredmények",
     "acceptingBadge": "Új ügyfeleket fogad"
   },
   "billing": {

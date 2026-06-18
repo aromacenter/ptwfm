@@ -25,6 +25,7 @@ export default async function TrainerProfilePage({
       headline: true,
       specialties: true,
       qualifications: true,
+      achievements: true,
       photoMime: true,
       updatedAt: true,
       user: { select: { name: true } },
@@ -54,44 +55,54 @@ export default async function TrainerProfilePage({
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-4 sm:p-6">
       {/* Profile header card */}
       <section className="overflow-hidden rounded-2xl border border-foreground/10 shadow-sm">
-        <div className="relative h-40 overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600">
+        <div className="relative h-32 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.25),transparent_60%)]" />
-          {/* Unique "signature" watermark from the trainer's name. */}
-          <span
-            className="pointer-events-none absolute -right-2 bottom-1 max-w-full -rotate-6 select-none truncate pr-4 text-5xl font-semibold italic text-white/20 sm:text-6xl"
-            style={{ fontFamily: '"Segoe Script","Brush Script MT",cursive' }}
-            aria-hidden="true"
-          >
-            {trainer.user.name}
-          </span>
         </div>
         <div className="px-6 pb-6">
-          {/* Avatar overlaps the banner; the text sits below it (readable). */}
-          <div className="-mt-12 inline-block rounded-2xl shadow-lg ring-4 ring-background">
-            <Avatar
-              name={trainer.user.name}
-              trainerId={trainerId}
-              hasPhoto={!!trainer.photoMime}
-              size={112}
-              version={trainer.updatedAt.getTime()}
-            />
+          {/* Avatar overlaps the banner; name + headline sit beside it. */}
+          <div className="-mt-12 flex items-end gap-4">
+            <div className="shrink-0 rounded-2xl shadow-lg ring-4 ring-background">
+              <Avatar
+                name={trainer.user.name}
+                trainerId={trainerId}
+                hasPhoto={!!trainer.photoMime}
+                size={112}
+                version={trainer.updatedAt.getTime()}
+              />
+            </div>
+            <div className="min-w-0 pb-1">
+              <h1 className="text-2xl font-bold sm:text-3xl">
+                {trainer.user.name}
+              </h1>
+              {trainer.headline && (
+                <p className="text-foreground/80">{trainer.headline}</p>
+              )}
+            </div>
           </div>
-          <div className="mt-3 space-y-1.5">
-            <h1 className="text-2xl font-bold sm:text-3xl">
-              {trainer.user.name}
-            </h1>
-            {trainer.headline && (
-              <p className="text-foreground/80">{trainer.headline}</p>
-            )}
-            {trainer.acceptingClients && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                {t("acceptingBadge")}
-              </span>
-            )}
-          </div>
+          {trainer.acceptingClients && (
+            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              {t("acceptingBadge")}
+            </span>
+          )}
         </div>
       </section>
+
+      {trainer.achievements.length > 0 && (
+        <section className="rounded-xl border border-foreground/10 p-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground/60">
+            {t("achievementsTitle")}
+          </h2>
+          <ul className="space-y-1.5 text-sm text-foreground/85">
+            {trainer.achievements.map((a) => (
+              <li key={a} className="flex items-start gap-2">
+                <span className="mt-0.5 shrink-0 text-emerald-500">★</span>
+                {a}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {trainer.bio && (
         <section className="rounded-xl border border-foreground/10 p-5">

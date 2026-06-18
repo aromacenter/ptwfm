@@ -33,6 +33,7 @@ export default async function DashboardPage({
       bio: true,
       specialties: true,
       qualifications: true,
+      achievements: true,
       acceptingClients: true,
       hourlyRatePence: true,
       photoMime: true,
@@ -105,6 +106,7 @@ export default async function DashboardPage({
             bio: profile.bio ?? "",
             specialties: profile.specialties,
             qualifications: profile.qualifications,
+            achievements: profile.achievements,
             acceptingClients: profile.acceptingClients,
             hourlyRatePence: profile.hourlyRatePence,
           }}

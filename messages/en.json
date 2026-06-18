@@ -66,6 +66,8 @@
     "specialtiesPlaceholder": "One per line, e.g. Weight loss\nStrength training\nRehabilitation",
     "qualifications": "Qualifications",
     "qualificationsPlaceholder": "One per line, e.g. Level 3 Personal Trainer\nNutrition Coach",
+    "achievements": "Achievements / results",
+    "achievementsPlaceholder": "One per line, e.g. Helped 50+ clients reach their goals\nMarathon finisher",
     "acceptingClients": "Accepting new clients (listed publicly)",
     "hourlyRate": "Session price (£)",
     "save": "Save profile",
@@ -184,6 +186,7 @@
     "aboutTitle": "About",
     "specialtiesTitle": "Specialist areas",
     "qualificationsTitle": "Qualifications",
+    "achievementsTitle": "Achievements & results",
     "acceptingBadge": "Accepting new clients"
   },
   "billing": {

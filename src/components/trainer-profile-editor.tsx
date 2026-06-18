@@ -29,6 +29,7 @@ export function TrainerProfileEditor({
     bio: string;
     specialties: string[];
     qualifications: string[];
+    achievements: string[];
     acceptingClients: boolean;
     hourlyRatePence: number;
   };
@@ -45,6 +46,9 @@ export function TrainerProfileEditor({
   );
   const [qualificationsText, setQualificationsText] = useState(
     initial.qualifications.join("\n"),
+  );
+  const [achievementsText, setAchievementsText] = useState(
+    initial.achievements.join("\n"),
   );
   const [accepting, setAccepting] = useState(initial.acceptingClients);
   const [rate, setRate] = useState((initial.hourlyRatePence / 100).toFixed(2));
@@ -67,6 +71,7 @@ export function TrainerProfileEditor({
         bio,
         specialties: toLines(specialtiesText),
         qualifications: toLines(qualificationsText),
+        achievements: toLines(achievementsText),
         acceptingClients: accepting,
         hourlyRatePence: Math.round(Number(rate) * 100) || 0,
       }),
@@ -210,6 +215,17 @@ export function TrainerProfileEditor({
           value={qualificationsText}
           onChange={(e) => setQualificationsText(e.target.value)}
           placeholder={t("qualificationsPlaceholder")}
+          rows={3}
+          className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
+        />
+      </label>
+
+      <label className="block space-y-1 text-sm">
+        <span>{t("achievements")}</span>
+        <textarea
+          value={achievementsText}
+          onChange={(e) => setAchievementsText(e.target.value)}
+          placeholder={t("achievementsPlaceholder")}
           rows={3}
           className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
         />
