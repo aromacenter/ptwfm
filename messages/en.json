@@ -70,6 +70,7 @@
     "hourlyRate": "Session price (£)",
     "save": "Save profile",
     "saved": "Profile saved.",
+    "saveError": "Couldn't save — please try again.",
     "photoTitle": "Profile photo",
     "uploadPhoto": "Upload photo",
     "removePhoto": "Remove",

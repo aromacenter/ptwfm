@@ -16,7 +16,11 @@ export async function POST(request: Request) {
     await request.json().catch(() => null),
   );
   if (!parsed.success) {
-    return NextResponse.json({ error: "invalid" }, { status: 400 });
+    const first = parsed.error.issues[0];
+    return NextResponse.json(
+      { error: "invalid", field: first?.path.join("."), message: first?.message },
+      { status: 400 },
+    );
   }
   const {
     name,
@@ -28,20 +32,28 @@ export async function POST(request: Request) {
     hourlyRatePence,
   } = parsed.data;
 
-  await prisma.$transaction([
-    prisma.user.update({ where: { id: user.id }, data: { name } }),
-    prisma.trainerProfile.update({
-      where: { userId: user.id },
-      data: {
-        headline: headline || null,
-        bio: bio || null,
-        specialties,
-        qualifications,
-        acceptingClients,
-        hourlyRatePence,
-      },
-    }),
-  ]);
+  try {
+    await prisma.$transaction([
+      // Update the display name only when one was provided.
+      ...(name
+        ? [prisma.user.update({ where: { id: user.id }, data: { name } })]
+        : []),
+      prisma.trainerProfile.update({
+        where: { userId: user.id },
+        data: {
+          headline: headline || null,
+          bio: bio || null,
+          specialties,
+          qualifications,
+          acceptingClients,
+          hourlyRatePence,
+        },
+      }),
+    ]);
+  } catch (err) {
+    console.error("trainer profile update failed", err);
+    return NextResponse.json({ error: "server_error" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }

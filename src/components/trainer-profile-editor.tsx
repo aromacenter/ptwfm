@@ -50,12 +50,14 @@ export function TrainerProfileEditor({
   const [rate, setRate] = useState((initial.hourlyRatePence / 100).toFixed(2));
   const [pending, setPending] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
 
   async function save() {
     setPending(true);
     setSaved(false);
+    setSaveError(false);
     const res = await fetch("/api/trainer/profile", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -70,7 +72,12 @@ export function TrainerProfileEditor({
       }),
     });
     setPending(false);
-    if (res.ok) setSaved(true);
+    if (res.ok) {
+      setSaved(true);
+      router.refresh();
+    } else {
+      setSaveError(true);
+    }
   }
 
   async function onFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -241,6 +248,11 @@ export function TrainerProfileEditor({
         {saved && (
           <span role="status" className="text-sm text-green-700">
             {t("saved")}
+          </span>
+        )}
+        {saveError && (
+          <span role="alert" className="text-sm text-red-600">
+            {t("saveError")}
           </span>
         )}
       </div>

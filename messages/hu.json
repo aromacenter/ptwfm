@@ -70,6 +70,7 @@
     "hourlyRate": "Alkalom ára (£)",
     "save": "Profil mentése",
     "saved": "Profil elmentve.",
+    "saveError": "Nem sikerült menteni — próbáld újra.",
     "photoTitle": "Profilkép",
     "uploadPhoto": "Kép feltöltése",
     "removePhoto": "Eltávolítás",
