@@ -1,14 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
-import { getTrainerSlots } from "@/lib/booking/service";
 import { BookingPicker } from "@/components/booking-picker";
 import { Avatar } from "@/components/avatar";
 
-// Reads live availability + the viewer's session on each request.
+// Reads the viewer's session on each request (slots are fetched client-side).
 export const dynamic = "force-dynamic";
-
-const DAYS_AHEAD = 14;
 
 export default async function TrainerProfilePage({
   params,
@@ -39,11 +36,6 @@ export default async function TrainerProfilePage({
       </main>
     );
   }
-
-  const now = new Date();
-  const to = new Date(now.getTime() + DAYS_AHEAD * 24 * 60 * 60 * 1000);
-  const slots = await getTrainerSlots(trainerId, now, to, now);
-  const available = slots.filter((s) => !s.booked).map((s) => s.start.toISOString());
 
   const user = await getCurrentUser();
   let dedicated = false;
@@ -114,7 +106,6 @@ export default async function TrainerProfilePage({
         <div className="mt-4">
           <BookingPicker
             trainerId={trainerId}
-            slots={available}
             canBook={canBook}
             signedIn={!!user}
             kind="CONSULTATION"

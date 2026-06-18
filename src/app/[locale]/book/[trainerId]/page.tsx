@@ -2,12 +2,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { redirect } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/auth/session";
-import { getTrainerSlots } from "@/lib/booking/service";
 import { BookingPicker } from "@/components/booking-picker";
 
 export const dynamic = "force-dynamic";
-
-const DAYS_AHEAD = 14;
 
 export default async function BookPage({
   params,
@@ -49,13 +46,6 @@ export default async function BookPage({
     return null;
   }
 
-  const now = new Date();
-  const to = new Date(now.getTime() + DAYS_AHEAD * 24 * 60 * 60 * 1000);
-  const slots = await getTrainerSlots(trainerId, now, to, now);
-  const available = slots
-    .filter((s) => !s.booked)
-    .map((s) => s.start.toISOString());
-
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6">
       <header className="space-y-1">
@@ -66,7 +56,6 @@ export default async function BookPage({
       </header>
       <BookingPicker
         trainerId={trainerId}
-        slots={available}
         canBook={true}
         signedIn={true}
         kind="SESSION"

@@ -164,7 +164,9 @@
     "trainerNotFound": "Az edző nem található.",
     "consultationConfirmed": "Konzultáció lefoglalva! Az edződ jelentkezni fog.",
     "alreadyDedicated": "Már egy edzővel dolgozol együtt.",
-    "notDedicated": "Előbb foglalj konzultációt ennél az edzőnél."
+    "notDedicated": "Előbb foglalj konzultációt ennél az edzőnél.",
+    "prevMonth": "Előző hónap",
+    "nextMonth": "Következő hónap"
   },
   "trainers": {
     "directoryTitle": "Edző keresése",

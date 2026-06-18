@@ -164,7 +164,9 @@
     "trainerNotFound": "Trainer not found.",
     "consultationConfirmed": "Consultation booked! Your trainer will follow up.",
     "alreadyDedicated": "You're already working with a trainer.",
-    "notDedicated": "Book a consultation with this trainer first."
+    "notDedicated": "Book a consultation with this trainer first.",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month"
   },
   "trainers": {
     "directoryTitle": "Find a trainer",

@@ -1,40 +1,52 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { DEFAULT_TIMEZONE } from "@/lib/i18n/format";
 
 const localeTag: Record<string, string> = { en: "en-GB", hu: "hu-HU" };
-
-const DAYS_SHOWN = 14;
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export function BookingPicker({
   trainerId,
-  slots,
   canBook,
   signedIn,
   kind = "SESSION",
 }: {
   trainerId: string;
-  slots: string[]; // ISO start instants
   canBook: boolean;
   signedIn: boolean;
   kind?: "SESSION" | "CONSULTATION";
 }) {
   const t = useTranslations("booking");
+  const tc = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
   const tag = localeTag[locale] ?? "en-GB";
 
-  const [available, setAvailable] = useState<string[]>(slots);
-  const [pending, setPending] = useState<string | null>(null);
-  const [message, setMessage] = useState<{
-    kind: "ok" | "error";
-    text: string;
-  } | null>(null);
+  // Current month in Europe/London.
+  const todayKey = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-CA", {
+        timeZone: DEFAULT_TIMEZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date()),
+    [],
+  );
+  const [curY, curM] = [Number(todayKey.slice(0, 4)), Number(todayKey.slice(5, 7))];
 
-  // Formatters (Europe/London).
+  const [view, setView] = useState({ year: curY, month: curM }); // month 1-12
+  const [byDay, setByDay] = useState<Map<string, string[]>>(new Map());
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string } | null>(
+    null,
+  );
+
   const dayKeyFmt = useMemo(
     () =>
       new Intl.DateTimeFormat("en-CA", {
@@ -54,67 +66,72 @@ export function BookingPicker({
       }),
     [tag],
   );
-  const monthLabelFmt = useMemo(
+
+  const monthLabel = useMemo(
     () =>
       new Intl.DateTimeFormat(tag, {
         month: "long",
         year: "numeric",
         timeZone: "UTC",
-      }),
-    [tag],
-  );
-  const weekdayShortFmt = useMemo(
-    () =>
-      new Intl.DateTimeFormat(tag, { weekday: "short", timeZone: "UTC" }),
-    [tag],
+      }).format(new Date(Date.UTC(view.year, view.month - 1, 1))),
+    [tag, view],
   );
 
-  // Slots grouped by Europe/London calendar day.
-  const byDay = useMemo(() => {
-    const m = new Map<string, string[]>();
-    for (const iso of available) {
-      const key = dayKeyFmt.format(new Date(iso));
-      const list = m.get(key) ?? [];
-      list.push(iso);
-      m.set(key, list);
-    }
-    for (const list of m.values()) list.sort();
-    return m;
-  }, [available, dayKeyFmt]);
-
-  // 14-day window starting today.
-  const todayKey = dayKeyFmt.format(new Date());
-  const dayKeys = useMemo(() => {
-    const base = new Date(`${todayKey}T12:00:00Z`);
-    return Array.from({ length: DAYS_SHOWN }, (_, i) => {
-      const d = new Date(base);
-      d.setUTCDate(d.getUTCDate() + i);
-      return d.toISOString().slice(0, 10);
-    });
-  }, [todayKey]);
-
-  const firstAvailable = dayKeys.find((k) => byDay.has(k)) ?? null;
-  const [selected, setSelected] = useState<string | null>(firstAvailable);
-  const selectedKey = selected && byDay.has(selected) ? selected : firstAvailable;
-
-  // Monday-first weekday headers.
   const weekdayHeaders = useMemo(() => {
-    const ref = new Date("2024-01-01T12:00:00Z"); // a Monday
+    const fmt = new Intl.DateTimeFormat(tag, { weekday: "short", timeZone: "UTC" });
+    const ref = new Date("2024-01-01T12:00:00Z"); // Monday
     return Array.from({ length: 7 }, (_, i) => {
       const d = new Date(ref);
       d.setUTCDate(ref.getUTCDate() + i);
-      return weekdayShortFmt.format(d);
+      return fmt.format(d);
     });
-  }, [weekdayShortFmt]);
+  }, [tag]);
 
-  // Leading blanks so the first day lands under the right weekday column.
-  const leadingBlanks = useMemo(() => {
-    if (dayKeys.length === 0) return 0;
-    const dow = new Date(`${dayKeys[0]}T12:00:00Z`).getUTCDay(); // 0=Sun
-    return (dow + 6) % 7; // Monday-first
-  }, [dayKeys]);
+  // Fetch the displayed month's available slots (pad by a day for tz edges).
+  const loadMonth = useCallback(async () => {
+    setLoading(true);
+    const from = new Date(Date.UTC(view.year, view.month - 1, 1) - 86_400_000);
+    const to = new Date(Date.UTC(view.year, view.month, 1) + 86_400_000);
+    const res = await fetch(
+      `/api/availability/slots?trainerId=${trainerId}&from=${from.toISOString()}&to=${to.toISOString()}`,
+    );
+    const data = (await res.json().catch(() => null)) as
+      | { slots: { start: string }[] }
+      | null;
+    const m = new Map<string, string[]>();
+    for (const s of data?.slots ?? []) {
+      const key = dayKeyFmt.format(new Date(s.start));
+      const list = m.get(key) ?? [];
+      list.push(s.start);
+      m.set(key, list);
+    }
+    for (const list of m.values()) list.sort();
+    setByDay(m);
+    setLoading(false);
+  }, [trainerId, view, dayKeyFmt]);
 
-  const monthLabel = monthLabelFmt.format(new Date(`${dayKeys[0]}T12:00:00Z`));
+  useEffect(() => {
+    // Load the displayed month's slots (fetch-on-mount / on month change).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadMonth();
+  }, [loadMonth]);
+
+  const daysInMonth = new Date(Date.UTC(view.year, view.month, 0)).getUTCDate();
+  const leadingBlanks =
+    (new Date(Date.UTC(view.year, view.month - 1, 1)).getUTCDay() + 6) % 7;
+  const dayKeys = Array.from(
+    { length: daysInMonth },
+    (_, i) => `${view.year}-${pad(view.month)}-${pad(i + 1)}`,
+  );
+
+  const isCurrentMonth = view.year === curY && view.month === curM;
+  function shift(delta: number) {
+    setSelected(null);
+    setView((v) => {
+      const idx = v.year * 12 + (v.month - 1) + delta;
+      return { year: Math.floor(idx / 12), month: (idx % 12) + 1 };
+    });
+  }
 
   async function book(iso: string) {
     if (!signedIn) {
@@ -130,7 +147,11 @@ export function BookingPicker({
     });
     setPending(null);
     if (res.ok) {
-      setAvailable((prev) => prev.filter((s) => s !== iso));
+      setByDay((prev) => {
+        const m = new Map(prev);
+        for (const [k, list] of m) m.set(k, list.filter((s) => s !== iso));
+        return m;
+      });
       setMessage({
         kind: "ok",
         text: kind === "CONSULTATION" ? t("consultationConfirmed") : t("confirmed"),
@@ -144,31 +165,39 @@ export function BookingPicker({
     } else if (err === "not_dedicated") {
       setMessage({ kind: "error", text: t("notDedicated") });
     } else {
-      setAvailable((prev) => prev.filter((s) => s !== iso));
       setMessage({ kind: "error", text: t("slotTaken") });
+      void loadMonth();
     }
   }
 
-  if (available.length === 0) {
-    return (
-      <div className="space-y-3">
-        {message && <Banner message={message} />}
-        <p className="text-sm text-foreground/60">{t("noSlots")}</p>
-      </div>
-    );
-  }
-
-  const selectedSlots = selectedKey ? (byDay.get(selectedKey) ?? []) : [];
+  const selectedSlots = selected ? (byDay.get(selected) ?? []) : [];
 
   return (
     <div className="space-y-4">
       {message && <Banner message={message} />}
-      {!signedIn && (
-        <p className="text-sm text-foreground/70">{t("signInToBook")}</p>
-      )}
+      {!signedIn && <p className="text-sm text-foreground/70">{t("signInToBook")}</p>}
 
       <div className="rounded-xl border border-foreground/10 p-3">
-        <p className="px-1 pb-2 text-sm font-medium capitalize">{monthLabel}</p>
+        <div className="flex items-center justify-between px-1 pb-2">
+          <button
+            type="button"
+            onClick={() => shift(-1)}
+            disabled={isCurrentMonth}
+            aria-label={t("prevMonth")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-foreground/10 disabled:opacity-30"
+          >
+            ‹
+          </button>
+          <span className="text-sm font-medium capitalize">{monthLabel}</span>
+          <button
+            type="button"
+            onClick={() => shift(1)}
+            aria-label={t("nextMonth")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-foreground/10"
+          >
+            ›
+          </button>
+        </div>
 
         <div className="grid grid-cols-7 gap-1 text-center">
           {weekdayHeaders.map((w, i) => (
@@ -180,9 +209,8 @@ export function BookingPicker({
             <div key={`b${i}`} />
           ))}
           {dayKeys.map((key) => {
-            const has = byDay.has(key);
-            const dayNum = Number(key.slice(8, 10));
-            const isSelected = key === selectedKey;
+            const has = byDay.has(key) && (byDay.get(key)?.length ?? 0) > 0;
+            const isSelected = key === selected;
             return (
               <button
                 key={key}
@@ -191,13 +219,11 @@ export function BookingPicker({
                 onClick={() => setSelected(key)}
                 className={[
                   "flex aspect-square flex-col items-center justify-center rounded-lg text-sm",
-                  has
-                    ? "cursor-pointer hover:bg-foreground/10"
-                    : "text-foreground/25",
+                  has ? "cursor-pointer hover:bg-foreground/10" : "text-foreground/25",
                   isSelected ? "bg-foreground text-background" : "",
                 ].join(" ")}
               >
-                <span>{dayNum}</span>
+                <span>{Number(key.slice(8, 10))}</span>
                 {has && !isSelected && (
                   <span className="mt-0.5 h-1 w-1 rounded-full bg-emerald-500" />
                 )}
@@ -205,9 +231,12 @@ export function BookingPicker({
             );
           })}
         </div>
+        {loading && (
+          <p className="px-1 pt-2 text-xs text-foreground/50">{tc("loading")}</p>
+        )}
       </div>
 
-      {selectedKey && (
+      {selected && selectedSlots.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {selectedSlots.map((iso) => (
             <button
@@ -226,11 +255,7 @@ export function BookingPicker({
   );
 }
 
-function Banner({
-  message,
-}: {
-  message: { kind: "ok" | "error"; text: string };
-}) {
+function Banner({ message }: { message: { kind: "ok" | "error"; text: string } }) {
   return (
     <p
       role={message.kind === "error" ? "alert" : "status"}
