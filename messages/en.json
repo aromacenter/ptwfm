@@ -173,7 +173,8 @@
     "viewProfile": "View profile",
     "bookConsultation": "Book a consultation",
     "consultationIntro": "Book a free initial consultation. All times are shown in UK time.",
-    "aboutTitle": "About"
+    "aboutTitle": "About",
+    "acceptingBadge": "Accepting new clients"
   },
   "billing": {
     "title": "Sessions & payment",

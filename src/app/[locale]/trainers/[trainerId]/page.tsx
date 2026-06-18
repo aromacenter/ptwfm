@@ -60,20 +60,32 @@ export default async function TrainerProfilePage({
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-4 sm:p-6">
       {/* Profile header card */}
       <section className="overflow-hidden rounded-2xl border border-foreground/10 shadow-sm">
-        <div className="h-28 bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-500" />
+        <div className="relative h-36 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.25),transparent_60%)]" />
+        </div>
         <div className="px-6 pb-6">
-          <div className="-mt-12 flex items-end gap-4">
-            <Avatar
-              name={trainer.user.name}
-              trainerId={trainerId}
-              hasPhoto={!!trainer.photoMime}
-              size={96}
-              version={trainer.updatedAt.getTime()}
-            />
-            <div className="pb-1">
-              <h1 className="text-2xl font-bold">{trainer.user.name}</h1>
+          <div className="-mt-16 flex flex-col items-center gap-3 text-center sm:-mt-14 sm:flex-row sm:items-end sm:gap-5 sm:text-left">
+            <div className="rounded-full shadow-lg ring-4 ring-background">
+              <Avatar
+                name={trainer.user.name}
+                trainerId={trainerId}
+                hasPhoto={!!trainer.photoMime}
+                size={112}
+                version={trainer.updatedAt.getTime()}
+              />
+            </div>
+            <div className="space-y-1 pb-1">
+              <h1 className="text-2xl font-bold sm:text-3xl">
+                {trainer.user.name}
+              </h1>
               {trainer.headline && (
-                <p className="text-foreground/70">{trainer.headline}</p>
+                <p className="text-foreground/80">{trainer.headline}</p>
+              )}
+              {trainer.acceptingClients && (
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {t("acceptingBadge")}
+                </span>
               )}
             </div>
           </div>

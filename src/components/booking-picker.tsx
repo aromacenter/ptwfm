@@ -7,6 +7,8 @@ import { DEFAULT_TIMEZONE } from "@/lib/i18n/format";
 
 const localeTag: Record<string, string> = { en: "en-GB", hu: "hu-HU" };
 
+const DAYS_SHOWN = 14;
+
 export function BookingPicker({
   trainerId,
   slots,
@@ -32,15 +34,16 @@ export function BookingPicker({
     text: string;
   } | null>(null);
 
-  const dayFmt = useMemo(
+  // Formatters (Europe/London).
+  const dayKeyFmt = useMemo(
     () =>
-      new Intl.DateTimeFormat(tag, {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
+      new Intl.DateTimeFormat("en-CA", {
         timeZone: DEFAULT_TIMEZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
       }),
-    [tag],
+    [],
   );
   const timeFmt = useMemo(
     () =>
@@ -51,18 +54,67 @@ export function BookingPicker({
       }),
     [tag],
   );
+  const monthLabelFmt = useMemo(
+    () =>
+      new Intl.DateTimeFormat(tag, {
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC",
+      }),
+    [tag],
+  );
+  const weekdayShortFmt = useMemo(
+    () =>
+      new Intl.DateTimeFormat(tag, { weekday: "short", timeZone: "UTC" }),
+    [tag],
+  );
 
-  // Group slots by calendar day (Europe/London).
-  const grouped = useMemo(() => {
-    const map = new Map<string, string[]>();
+  // Slots grouped by Europe/London calendar day.
+  const byDay = useMemo(() => {
+    const m = new Map<string, string[]>();
     for (const iso of available) {
-      const label = dayFmt.format(new Date(iso));
-      const list = map.get(label) ?? [];
+      const key = dayKeyFmt.format(new Date(iso));
+      const list = m.get(key) ?? [];
       list.push(iso);
-      map.set(label, list);
+      m.set(key, list);
     }
-    return [...map.entries()];
-  }, [available, dayFmt]);
+    for (const list of m.values()) list.sort();
+    return m;
+  }, [available, dayKeyFmt]);
+
+  // 14-day window starting today.
+  const todayKey = dayKeyFmt.format(new Date());
+  const dayKeys = useMemo(() => {
+    const base = new Date(`${todayKey}T12:00:00Z`);
+    return Array.from({ length: DAYS_SHOWN }, (_, i) => {
+      const d = new Date(base);
+      d.setUTCDate(d.getUTCDate() + i);
+      return d.toISOString().slice(0, 10);
+    });
+  }, [todayKey]);
+
+  const firstAvailable = dayKeys.find((k) => byDay.has(k)) ?? null;
+  const [selected, setSelected] = useState<string | null>(firstAvailable);
+  const selectedKey = selected && byDay.has(selected) ? selected : firstAvailable;
+
+  // Monday-first weekday headers.
+  const weekdayHeaders = useMemo(() => {
+    const ref = new Date("2024-01-01T12:00:00Z"); // a Monday
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(ref);
+      d.setUTCDate(ref.getUTCDate() + i);
+      return weekdayShortFmt.format(d);
+    });
+  }, [weekdayShortFmt]);
+
+  // Leading blanks so the first day lands under the right weekday column.
+  const leadingBlanks = useMemo(() => {
+    if (dayKeys.length === 0) return 0;
+    const dow = new Date(`${dayKeys[0]}T12:00:00Z`).getUTCDay(); // 0=Sun
+    return (dow + 6) % 7; // Monday-first
+  }, [dayKeys]);
+
+  const monthLabel = monthLabelFmt.format(new Date(`${dayKeys[0]}T12:00:00Z`));
 
   async function book(iso: string) {
     if (!signedIn) {
@@ -77,7 +129,6 @@ export function BookingPicker({
       body: JSON.stringify({ trainerId, start: iso, kind }),
     });
     setPending(null);
-
     if (res.ok) {
       setAvailable((prev) => prev.filter((s) => s !== iso));
       setMessage({
@@ -86,16 +137,14 @@ export function BookingPicker({
       });
       return;
     }
-    const data = (await res.json().catch(() => null)) as { error?: string } | null;
-    const err = data?.error;
+    const err = ((await res.json().catch(() => null)) as { error?: string } | null)
+      ?.error;
     if (err === "already_dedicated") {
       setMessage({ kind: "error", text: t("alreadyDedicated") });
     } else if (err === "not_dedicated") {
       setMessage({ kind: "error", text: t("notDedicated") });
-    } else if (err === "slot_taken" || err === "slot_unavailable") {
-      setAvailable((prev) => prev.filter((s) => s !== iso));
-      setMessage({ kind: "error", text: t("slotTaken") });
     } else {
+      setAvailable((prev) => prev.filter((s) => s !== iso));
       setMessage({ kind: "error", text: t("slotTaken") });
     }
   }
@@ -109,32 +158,70 @@ export function BookingPicker({
     );
   }
 
+  const selectedSlots = selectedKey ? (byDay.get(selectedKey) ?? []) : [];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {message && <Banner message={message} />}
       {!signedIn && (
         <p className="text-sm text-foreground/70">{t("signInToBook")}</p>
       )}
-      {grouped.map(([day, daySlots]) => (
-        <section key={day} className="space-y-2">
-          <h2 className="text-sm font-medium text-foreground/80">{day}</h2>
-          <div className="flex flex-wrap gap-2">
-            {daySlots.map((iso) => (
+
+      <div className="rounded-xl border border-foreground/10 p-3">
+        <p className="px-1 pb-2 text-sm font-medium capitalize">{monthLabel}</p>
+
+        <div className="grid grid-cols-7 gap-1 text-center">
+          {weekdayHeaders.map((w, i) => (
+            <div key={i} className="py-1 text-xs text-foreground/50">
+              {w}
+            </div>
+          ))}
+          {Array.from({ length: leadingBlanks }).map((_, i) => (
+            <div key={`b${i}`} />
+          ))}
+          {dayKeys.map((key) => {
+            const has = byDay.has(key);
+            const dayNum = Number(key.slice(8, 10));
+            const isSelected = key === selectedKey;
+            return (
               <button
-                key={iso}
+                key={key}
                 type="button"
-                disabled={!canBook || pending === iso}
-                onClick={() => book(iso)}
-                className="rounded-full border border-foreground/20 px-4 py-2 text-sm disabled:opacity-50"
+                disabled={!has}
+                onClick={() => setSelected(key)}
+                className={[
+                  "flex aspect-square flex-col items-center justify-center rounded-lg text-sm",
+                  has
+                    ? "cursor-pointer hover:bg-foreground/10"
+                    : "text-foreground/25",
+                  isSelected ? "bg-foreground text-background" : "",
+                ].join(" ")}
               >
-                {pending === iso
-                  ? t("booking")
-                  : timeFmt.format(new Date(iso))}
+                <span>{dayNum}</span>
+                {has && !isSelected && (
+                  <span className="mt-0.5 h-1 w-1 rounded-full bg-emerald-500" />
+                )}
               </button>
-            ))}
-          </div>
-        </section>
-      ))}
+            );
+          })}
+        </div>
+      </div>
+
+      {selectedKey && (
+        <div className="flex flex-wrap gap-2">
+          {selectedSlots.map((iso) => (
+            <button
+              key={iso}
+              type="button"
+              disabled={!canBook || pending === iso}
+              onClick={() => book(iso)}
+              className="rounded-full border border-foreground/20 px-4 py-2 text-sm hover:border-foreground/40 disabled:opacity-50"
+            >
+              {pending === iso ? t("booking") : timeFmt.format(new Date(iso))}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

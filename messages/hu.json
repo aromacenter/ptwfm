@@ -173,7 +173,8 @@
     "viewProfile": "Profil megtekintése",
     "bookConsultation": "Konzultáció foglalása",
     "consultationIntro": "Foglalj egy ingyenes első konzultációt. Minden idő brit idő szerint.",
-    "aboutTitle": "Bemutatkozás"
+    "aboutTitle": "Bemutatkozás",
+    "acceptingBadge": "Új ügyfeleket fogad"
   },
   "billing": {
     "title": "Alkalmak és fizetés",
