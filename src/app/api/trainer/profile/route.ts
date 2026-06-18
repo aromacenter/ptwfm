@@ -18,13 +18,22 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
-  const { headline, bio, acceptingClients, hourlyRatePence } = parsed.data;
+  const {
+    headline,
+    bio,
+    specialties,
+    qualifications,
+    acceptingClients,
+    hourlyRatePence,
+  } = parsed.data;
 
   await prisma.trainerProfile.update({
     where: { userId: user.id },
     data: {
       headline: headline || null,
       bio: bio || null,
+      specialties,
+      qualifications,
       acceptingClients,
       hourlyRatePence,
     },

@@ -61,6 +61,10 @@
     "headlinePlaceholder": "pl. Erő- és kondíció edző",
     "bio": "Bemutatkozás",
     "bioPlaceholder": "Mesélj a tapasztalatodról és a módszeredről…",
+    "specialties": "Szakterületek",
+    "specialtiesPlaceholder": "Soronként egy, pl. Fogyás\nErőnléti edzés\nRehabilitáció",
+    "qualifications": "Képesítések",
+    "qualificationsPlaceholder": "Soronként egy, pl. Level 3 személyi edző\nTáplálkozási tanácsadó",
     "acceptingClients": "Új ügyfeleket fogadok (publikusan listázva)",
     "hourlyRate": "Alkalom ára (£)",
     "save": "Profil mentése",
@@ -176,6 +180,8 @@
     "bookConsultation": "Konzultáció foglalása",
     "consultationIntro": "Foglalj egy ingyenes első konzultációt. Minden idő brit idő szerint.",
     "aboutTitle": "Bemutatkozás",
+    "specialtiesTitle": "Szakterületek",
+    "qualificationsTitle": "Képesítések",
     "acceptingBadge": "Új ügyfeleket fogad"
   },
   "billing": {

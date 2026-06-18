@@ -23,6 +23,8 @@ export default async function TrainerProfilePage({
       acceptingClients: true,
       bio: true,
       headline: true,
+      specialties: true,
+      qualifications: true,
       photoMime: true,
       updatedAt: true,
       user: { select: { name: true } },
@@ -92,6 +94,40 @@ export default async function TrainerProfilePage({
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/85">
             {trainer.bio}
           </p>
+        </section>
+      )}
+
+      {trainer.specialties.length > 0 && (
+        <section className="rounded-xl border border-foreground/10 p-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground/60">
+            {t("specialtiesTitle")}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {trainer.specialties.map((s) => (
+              <span
+                key={s}
+                className="rounded-full bg-foreground/10 px-3 py-1 text-sm"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {trainer.qualifications.length > 0 && (
+        <section className="rounded-xl border border-foreground/10 p-5">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground/60">
+            {t("qualificationsTitle")}
+          </h2>
+          <ul className="space-y-1.5 text-sm text-foreground/85">
+            {trainer.qualifications.map((q) => (
+              <li key={q} className="flex items-start gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                {q}
+              </li>
+            ))}
+          </ul>
         </section>
       )}
 

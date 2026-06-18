@@ -61,6 +61,10 @@
     "headlinePlaceholder": "e.g. Strength & conditioning coach",
     "bio": "About you",
     "bioPlaceholder": "Tell clients about your experience and approach…",
+    "specialties": "Specialist areas",
+    "specialtiesPlaceholder": "One per line, e.g. Weight loss\nStrength training\nRehabilitation",
+    "qualifications": "Qualifications",
+    "qualificationsPlaceholder": "One per line, e.g. Level 3 Personal Trainer\nNutrition Coach",
     "acceptingClients": "Accepting new clients (listed publicly)",
     "hourlyRate": "Session price (£)",
     "save": "Save profile",
@@ -176,6 +180,8 @@
     "bookConsultation": "Book a consultation",
     "consultationIntro": "Book a free initial consultation. All times are shown in UK time.",
     "aboutTitle": "About",
+    "specialtiesTitle": "Specialist areas",
+    "qualificationsTitle": "Qualifications",
     "acceptingBadge": "Accepting new clients"
   },
   "billing": {

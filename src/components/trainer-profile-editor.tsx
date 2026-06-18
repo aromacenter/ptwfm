@@ -6,6 +6,13 @@ import { useRouter } from "@/i18n/navigation";
 import { Avatar } from "@/components/avatar";
 import { validateImageUpload } from "@/lib/validation/image";
 
+// Split a textarea (one item per line) into a trimmed, non-empty list.
+const toLines = (text: string): string[] =>
+  text
+    .split("\n")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
 export function TrainerProfileEditor({
   trainerId,
   name,
@@ -20,6 +27,8 @@ export function TrainerProfileEditor({
   initial: {
     headline: string;
     bio: string;
+    specialties: string[];
+    qualifications: string[];
     acceptingClients: boolean;
     hourlyRatePence: number;
   };
@@ -30,6 +39,12 @@ export function TrainerProfileEditor({
 
   const [headline, setHeadline] = useState(initial.headline);
   const [bio, setBio] = useState(initial.bio);
+  const [specialtiesText, setSpecialtiesText] = useState(
+    initial.specialties.join("\n"),
+  );
+  const [qualificationsText, setQualificationsText] = useState(
+    initial.qualifications.join("\n"),
+  );
   const [accepting, setAccepting] = useState(initial.acceptingClients);
   const [rate, setRate] = useState((initial.hourlyRatePence / 100).toFixed(2));
   const [pending, setPending] = useState(false);
@@ -46,6 +61,8 @@ export function TrainerProfileEditor({
       body: JSON.stringify({
         headline,
         bio,
+        specialties: toLines(specialtiesText),
+        qualifications: toLines(qualificationsText),
         acceptingClients: accepting,
         hourlyRatePence: Math.round(Number(rate) * 100) || 0,
       }),
@@ -153,6 +170,28 @@ export function TrainerProfileEditor({
           placeholder={t("bioPlaceholder")}
           rows={4}
           maxLength={2000}
+          className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
+        />
+      </label>
+
+      <label className="block space-y-1 text-sm">
+        <span>{t("specialties")}</span>
+        <textarea
+          value={specialtiesText}
+          onChange={(e) => setSpecialtiesText(e.target.value)}
+          placeholder={t("specialtiesPlaceholder")}
+          rows={3}
+          className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
+        />
+      </label>
+
+      <label className="block space-y-1 text-sm">
+        <span>{t("qualifications")}</span>
+        <textarea
+          value={qualificationsText}
+          onChange={(e) => setQualificationsText(e.target.value)}
+          placeholder={t("qualificationsPlaceholder")}
+          rows={3}
           className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
         />
       </label>
