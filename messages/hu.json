@@ -294,5 +294,17 @@
     "generateSchedule": "Hetem elemzése",
     "unavailable": "Az AI jelenleg nem érhető el. Próbáld újra később.",
     "disclaimer": "AI által generált — ellenőrizd, mielőtt cselekszel."
+  },
+  "reviews": {
+    "title": "Vélemények",
+    "count": "{count, plural, one {# vélemény} other {# vélemény}}",
+    "none": "Még nincs vélemény.",
+    "formTitle": "Írj véleményt",
+    "editTitle": "Véleményed módosítása",
+    "ratingLabel": "Értékelés",
+    "commentPlaceholder": "Oszd meg a tapasztalatod (opcionális)",
+    "submit": "Vélemény beküldése",
+    "saved": "Köszönjük a véleményed!",
+    "error": "Nem sikerült beküldeni a véleményt."
   }
 }

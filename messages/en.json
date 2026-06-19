@@ -294,5 +294,17 @@
     "generateSchedule": "Analyse my week",
     "unavailable": "AI is currently unavailable. Please try again later.",
     "disclaimer": "AI-generated — review before acting."
+  },
+  "reviews": {
+    "title": "Reviews",
+    "count": "{count, plural, one {# review} other {# reviews}}",
+    "none": "No reviews yet.",
+    "formTitle": "Leave a review",
+    "editTitle": "Update your review",
+    "ratingLabel": "Rating",
+    "commentPlaceholder": "Share your experience (optional)",
+    "submit": "Submit review",
+    "saved": "Thanks for your review.",
+    "error": "Couldn't submit your review."
   }
 }

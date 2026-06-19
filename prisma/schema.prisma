@@ -138,6 +138,7 @@ model TrainerProfile {
   trainingPlans        TrainingPlan[]
   workoutPrograms      WorkoutProgram[]
   nutritionPlans       NutritionPlan[]
+  reviews              Review[]
 }
 
 model ClientProfile {
@@ -158,6 +159,7 @@ model ClientProfile {
   trainingPlans  TrainingPlan[]
   workoutPrograms WorkoutProgram[]
   nutritionPlans  NutritionPlan[]
+  reviews         Review[]
 
   @@index([trainerId])
 }
@@ -269,6 +271,23 @@ model Appointment {
 
   @@unique([trainerId, startAt]) // prevents double-booking a slot
   @@index([clientId])
+}
+
+// Public client review of a trainer. One review per client per trainer
+// (upserted), gated server-side to clients with a real relationship.
+model Review {
+  id        String         @id @default(cuid())
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  clientId  String
+  client    ClientProfile  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  rating    Int // 1..5
+  comment   String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([trainerId, clientId])
+  @@index([trainerId])
 }
 
 // ---------------------------------------------------------------------------

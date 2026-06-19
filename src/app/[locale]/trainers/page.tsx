@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { Avatar } from "@/components/avatar";
+import { Stars } from "@/components/stars";
 
 // Reads the live trainer directory from the DB on each request.
 export const dynamic = "force-dynamic";
@@ -45,6 +46,23 @@ export default async function TrainersPage({
     orderBy: { createdAt: "asc" },
   });
 
+  // Rating summary per trainer (one grouped query for the whole page).
+  const ids = trainers.map((tr) => tr.id);
+  const grouped = ids.length
+    ? await prisma.review.groupBy({
+        by: ["trainerId"],
+        where: { trainerId: { in: ids } },
+        _avg: { rating: true },
+        _count: { _all: true },
+      })
+    : [];
+  const ratingByTrainer = new Map(
+    grouped.map((g) => [
+      g.trainerId,
+      { average: Math.round((g._avg.rating ?? 0) * 10) / 10, count: g._count._all },
+    ]),
+  );
+
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-6">
       <header className="space-y-1">
@@ -86,6 +104,7 @@ export default async function TrainersPage({
             ]
               .filter(Boolean)
               .join(" · ");
+            const rating = ratingByTrainer.get(tr.id);
             return (
               <li
                 key={tr.id}
@@ -108,6 +127,12 @@ export default async function TrainersPage({
                   {loc && (
                     <p className="mt-0.5 truncate text-xs text-foreground/50">
                       {loc}
+                    </p>
+                  )}
+                  {rating && rating.count > 0 && (
+                    <p className="mt-1 flex items-center gap-1.5 text-xs text-foreground/60">
+                      <Stars value={rating.average} size="text-xs" />
+                      {rating.average} ({rating.count})
                     </p>
                   )}
                 </div>
