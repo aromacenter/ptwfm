@@ -32,6 +32,7 @@ export async function Nav() {
         ? { href: `/book/${client.trainerId}`, label: t("nav.book") }
         : { href: "/trainers", label: t("nav.findTrainer") },
       { href: "/my-bookings", label: t("nav.bookings") },
+      { href: "/my-plans", label: t("nav.myPlans") },
       { href: "/billing", label: t("nav.billing") },
       { href: "/privacy", label: t("nav.privacy") },
     ];

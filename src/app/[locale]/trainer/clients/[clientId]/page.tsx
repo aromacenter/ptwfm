@@ -7,6 +7,8 @@ import { getOwnedClient, clientHasHealthConsent } from "@/lib/clients/access";
 import { ClientNotes } from "@/components/client-notes";
 import { ClientPlans } from "@/components/client-plans";
 import { AiPanel } from "@/components/ai-panel";
+import { WorkoutBuilder } from "@/components/workout-builder";
+import { NutritionBuilder } from "@/components/nutrition-builder";
 
 export default async function ClientDetailPage({
   params,
@@ -29,17 +31,28 @@ export default async function ClientDetailPage({
   const client = await getOwnedClient(user.id, clientId);
   if (!client) notFound();
 
-  const [hasConsent, plans] = await Promise.all([
+  const [hasConsent, plans, workouts, nutrition] = await Promise.all([
     clientHasHealthConsent(client.userId),
     prisma.trainingPlan.findMany({
       where: { clientId },
       orderBy: { startDate: "desc" },
       include: { items: { orderBy: { position: "asc" } } },
     }),
+    prisma.workoutProgram.findMany({
+      where: { clientId },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, data: true },
+    }),
+    prisma.nutritionPlan.findMany({
+      where: { clientId },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, data: true },
+    }),
   ]);
 
   const t = await getTranslations("clients");
   const tAi = await getTranslations("ai");
+  const tp = await getTranslations("plans");
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-8 p-6">
@@ -78,6 +91,22 @@ export default async function ClientDetailPage({
             scope: p.scope,
             items: p.items.map((i) => i.content),
           }))}
+        />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-medium">{tp("workoutTitle")}</h2>
+        <WorkoutBuilder
+          clientId={clientId}
+          initial={workouts as React.ComponentProps<typeof WorkoutBuilder>["initial"]}
+        />
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="text-lg font-medium">{tp("nutritionTitle")}</h2>
+        <NutritionBuilder
+          clientId={clientId}
+          initial={nutrition as React.ComponentProps<typeof NutritionBuilder>["initial"]}
         />
       </section>
     </main>

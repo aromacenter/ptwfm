@@ -132,6 +132,8 @@ model TrainerProfile {
   availabilityExceptions AvailabilityException[]
   appointments         Appointment[]
   trainingPlans        TrainingPlan[]
+  workoutPrograms      WorkoutProgram[]
+  nutritionPlans       NutritionPlan[]
 }
 
 model ClientProfile {
@@ -150,6 +152,8 @@ model ClientProfile {
   paymentMethods PaymentMethod[]
   payments       Payment[]
   trainingPlans  TrainingPlan[]
+  workoutPrograms WorkoutProgram[]
+  nutritionPlans  NutritionPlan[]
 
   @@index([trainerId])
 }
@@ -374,6 +378,39 @@ model AiInsight {
   createdAt DateTime      @default(now())
 
   @@index([type, targetId])
+}
+
+// Structured training program assigned to a client. The day/exercise structure
+// is stored as JSON (loaded wholesale; not queried field-by-field).
+model WorkoutProgram {
+  id        String   @id @default(cuid())
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  clientId  String
+  client    ClientProfile  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title     String
+  data      Json // { notes, days: [{ label, exercises: [{ name, sets, reps, notes }] }] }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([trainerId])
+}
+
+// Structured nutrition / meal plan assigned to a client (JSON structure).
+model NutritionPlan {
+  id        String   @id @default(cuid())
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  clientId  String
+  client    ClientProfile  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  title     String
+  data      Json // { notes, meals: [{ name, items: [{ food, qty, kcal, protein, carbs, fat }] }] }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([trainerId])
 }
 
 // Processed Stripe webhook events — used to make webhook handling idempotent.
