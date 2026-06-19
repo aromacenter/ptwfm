@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
@@ -6,6 +7,45 @@ import { Avatar } from "@/components/avatar";
 
 // Reads the viewer's session on each request (slots are fetched client-side).
 export const dynamic = "force-dynamic";
+
+const SITE = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+
+// Per-profile SEO metadata so trainer pages rank and share nicely.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; trainerId: string }>;
+}): Promise<Metadata> {
+  const { locale, trainerId } = await params;
+  const trainer = await prisma.trainerProfile.findUnique({
+    where: { id: trainerId },
+    select: {
+      acceptingClients: true,
+      headline: true,
+      bio: true,
+      photoMime: true,
+      updatedAt: true,
+      user: { select: { name: true } },
+    },
+  });
+  if (!trainer || !trainer.acceptingClients) {
+    return { title: "Trainer", robots: { index: false } };
+  }
+  const title = trainer.headline
+    ? `${trainer.user.name} — ${trainer.headline}`
+    : trainer.user.name;
+  const description = (trainer.bio ?? trainer.headline ?? title).slice(0, 160);
+  const images = trainer.photoMime
+    ? [`/api/trainers/${trainerId}/photo?v=${trainer.updatedAt.getTime()}`]
+    : [];
+  return {
+    title,
+    description,
+    alternates: { canonical: `${SITE}/${locale}/trainers/${trainerId}` },
+    openGraph: { title, description, images, type: "profile" },
+    twitter: { card: "summary_large_image", title, description, images },
+  };
+}
 
 export default async function TrainerProfilePage({
   params,
@@ -51,8 +91,27 @@ export default async function TrainerProfilePage({
   }
   const canBook = !user || (user.role === "CLIENT" && !dedicated);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: trainer.user.name,
+    jobTitle: trainer.headline ?? "Personal trainer",
+    description: trainer.bio ?? undefined,
+    url: `${SITE}/${locale}/trainers/${trainerId}`,
+    image: trainer.photoMime
+      ? `${SITE}/api/trainers/${trainerId}/photo`
+      : undefined,
+    knowsAbout: trainer.specialties.length ? trainer.specialties : undefined,
+  };
+
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 space-y-6 p-4 sm:p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* Profile header card */}
       <section className="rounded-2xl border border-foreground/10 p-6 shadow-sm">
         <div className="flex items-center gap-5">

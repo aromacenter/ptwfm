@@ -19,7 +19,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PT Management",
+  metadataBase: new URL(process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
+  title: {
+    default: "PT Management",
+    template: "%s | PT Management",
+  },
   description: "Booking and scheduling platform for personal trainers.",
 };
 
