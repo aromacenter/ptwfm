@@ -66,6 +66,9 @@ export default async function TrainerProfilePage({
       specialties: true,
       qualifications: true,
       achievements: true,
+      city: true,
+      online: true,
+      inPerson: true,
       photoMime: true,
       updatedAt: true,
       user: { select: { name: true } },
@@ -130,6 +133,17 @@ export default async function TrainerProfilePage({
             </h1>
             {trainer.headline && (
               <p className="text-foreground/80">{trainer.headline}</p>
+            )}
+            {(trainer.city || trainer.online || trainer.inPerson) && (
+              <p className="text-sm text-foreground/60">
+                {[
+                  trainer.city,
+                  trainer.inPerson ? t("inPerson") : null,
+                  trainer.online ? t("online") : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
             )}
             {trainer.acceptingClients && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700">

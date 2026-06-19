@@ -119,6 +119,10 @@ model TrainerProfile {
   specialties    String[] @default([]) // specialist areas (public)
   qualifications String[] @default([]) // qualifications (public)
   achievements   String[] @default([]) // results / achievements (public)
+  city           String? // public location (for local search)
+  country        String  @default("GB")
+  online         Boolean @default(false) // offers online sessions
+  inPerson       Boolean @default(true) // offers in-person sessions
   photoData     Bytes? // profile photo bytes (served via API)
   photoMime     String? // photo mime type, e.g. image/jpeg
   acceptingClients Boolean @default(true) // shown publicly + open to consultations

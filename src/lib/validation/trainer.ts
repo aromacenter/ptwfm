@@ -9,6 +9,9 @@ export const trainerProfileSchema = z.object({
   specialties: z.array(z.string().trim().min(1).max(1000)).max(30).default([]),
   qualifications: z.array(z.string().trim().min(1).max(1000)).max(30).default([]),
   achievements: z.array(z.string().trim().min(1).max(1000)).max(30).default([]),
+  city: z.string().trim().max(100).default(""),
+  online: z.boolean().default(false),
+  inPerson: z.boolean().default(true),
   acceptingClients: z.boolean(),
   hourlyRatePence: z.number().int().min(0).max(100_000_00), // up to £100,000
 });

@@ -30,6 +30,9 @@ export function TrainerProfileEditor({
     specialties: string[];
     qualifications: string[];
     achievements: string[];
+    city: string;
+    online: boolean;
+    inPerson: boolean;
     acceptingClients: boolean;
     hourlyRatePence: number;
   };
@@ -50,6 +53,9 @@ export function TrainerProfileEditor({
   const [achievementsText, setAchievementsText] = useState(
     initial.achievements.join("\n"),
   );
+  const [city, setCity] = useState(initial.city);
+  const [online, setOnline] = useState(initial.online);
+  const [inPerson, setInPerson] = useState(initial.inPerson);
   const [accepting, setAccepting] = useState(initial.acceptingClients);
   const [rate, setRate] = useState((initial.hourlyRatePence / 100).toFixed(2));
   const [pending, setPending] = useState(false);
@@ -72,6 +78,9 @@ export function TrainerProfileEditor({
         specialties: toLines(specialtiesText),
         qualifications: toLines(qualificationsText),
         achievements: toLines(achievementsText),
+        city,
+        online,
+        inPerson,
         acceptingClients: accepting,
         hourlyRatePence: Math.round(Number(rate) * 100) || 0,
       }),
@@ -230,6 +239,36 @@ export function TrainerProfileEditor({
           className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
         />
       </label>
+
+      <label className="block space-y-1 text-sm">
+        <span>{t("city")}</span>
+        <input
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          placeholder={t("cityPlaceholder")}
+          maxLength={100}
+          className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
+        />
+      </label>
+
+      <div className="flex flex-wrap gap-4 text-sm">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={inPerson}
+            onChange={(e) => setInPerson(e.target.checked)}
+          />
+          <span>{t("inPerson")}</span>
+        </label>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={online}
+            onChange={(e) => setOnline(e.target.checked)}
+          />
+          <span>{t("online")}</span>
+        </label>
+      </div>
 
       <label className="block space-y-1 text-sm">
         <span>{t("hourlyRate")}</span>
