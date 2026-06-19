@@ -90,6 +90,16 @@ export default async function TrainersPage({
         </button>
       </form>
 
+      <div className="flex flex-wrap items-center gap-2 rounded-xl border border-foreground/10 bg-foreground/[0.02] p-4 text-sm">
+        <span className="text-foreground/70">{t("requestCta")}</span>
+        <Link
+          href="/request-trainer"
+          className="font-medium text-foreground underline"
+        >
+          {t("requestCtaLink")}
+        </Link>
+      </div>
+
       {trainers.length === 0 ? (
         <p className="text-sm text-foreground/60">
           {q || online ? t("noResults") : t("noTrainers")}

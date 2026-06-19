@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 const locales = ["en", "hu"];
-const staticPaths = ["", "/trainers", "/login", "/register"];
+const staticPaths = ["", "/trainers", "/request-trainer", "/login", "/register"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];

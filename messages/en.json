@@ -53,7 +53,8 @@
     "toReview": "Sessions to review",
     "noReview": "Nothing to review.",
     "completed": "Completed",
-    "noShow": "No-show"
+    "noShow": "No-show",
+    "viewRequests": "Client requests"
   },
   "trainerProfile": {
     "title": "Public profile",
@@ -198,7 +199,9 @@
     "specialtiesTitle": "Specialist areas",
     "qualificationsTitle": "Qualifications",
     "achievementsTitle": "Achievements & results",
-    "acceptingBadge": "Accepting new clients"
+    "acceptingBadge": "Accepting new clients",
+    "requestCta": "Can't find the right trainer?",
+    "requestCtaLink": "Request a trainer"
   },
   "billing": {
     "title": "Sessions & payment",
@@ -306,5 +309,28 @@
     "submit": "Submit review",
     "saved": "Thanks for your review.",
     "error": "Couldn't submit your review."
+  },
+  "requestTrainer": {
+    "title": "Request a trainer",
+    "intro": "Tell us your goal and we'll let matching trainers reach out to you.",
+    "name": "Your name",
+    "email": "Email",
+    "goal": "What are you looking for?",
+    "goalPlaceholder": "Your goal, schedule, budget, anything that helps a trainer decide if you're a good fit.",
+    "city": "City / area",
+    "cityPlaceholder": "e.g. London",
+    "online": "I'm open to online coaching",
+    "consent": "I agree that my details may be shared with trainers on this platform so they can contact me about my request.",
+    "submit": "Send request",
+    "thanks": "Thanks! Matching trainers can now see your request and will reach out by email.",
+    "error": "Couldn't send your request. Please try again."
+  },
+  "trainerRequests": {
+    "title": "Client requests",
+    "intro": "Prospective clients looking for a trainer. Reach out by email, then mark the request as responded.",
+    "empty": "No open requests right now.",
+    "online": "Open to online",
+    "markResponded": "Mark as responded",
+    "responded": "Responded"
   }
 }

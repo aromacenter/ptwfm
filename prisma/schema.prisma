@@ -139,6 +139,7 @@ model TrainerProfile {
   workoutPrograms      WorkoutProgram[]
   nutritionPlans       NutritionPlan[]
   reviews              Review[]
+  requestResponses     TrainerRequestResponse[]
 }
 
 model ClientProfile {
@@ -287,6 +288,36 @@ model Review {
   updatedAt DateTime       @updatedAt
 
   @@unique([trainerId, clientId])
+  @@index([trainerId])
+}
+
+// A prospective client's public "find me a trainer" request (reverse
+// marketplace). Trainers browse open requests and reach out; each can mark
+// that they responded. consentAt evidences GDPR consent given at submission.
+model TrainerRequest {
+  id        String                   @id @default(cuid())
+  name      String
+  email     String
+  goal      String
+  city      String?
+  online    Boolean                  @default(false)
+  open      Boolean                  @default(true)
+  consentAt DateTime                 @default(now())
+  createdAt DateTime                 @default(now())
+  responses TrainerRequestResponse[]
+
+  @@index([open, createdAt])
+}
+
+model TrainerRequestResponse {
+  id        String         @id @default(cuid())
+  requestId String
+  request   TrainerRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  trainerId String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+
+  @@unique([requestId, trainerId])
   @@index([trainerId])
 }
 

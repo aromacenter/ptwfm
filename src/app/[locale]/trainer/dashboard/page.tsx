@@ -175,6 +175,12 @@ export default async function DashboardPage({
         >
           {t("viewClients")}
         </Link>
+        <Link
+          href="/trainer/requests"
+          className="rounded-full border border-foreground/20 px-4 py-2 text-sm"
+        >
+          {t("viewRequests")}
+        </Link>
       </section>
     </main>
   );
