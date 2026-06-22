@@ -11,86 +11,115 @@ export type Goal =
   | "HEALTH"
   | "GENERAL";
 
-// Each goal: enum value, i18n label key, and an inline icon. One element in
-// every icon carries a `gs-play …` animation class that only runs on hover or
-// when the card is selected (and never under prefers-reduced-motion).
-const GOALS: { value: Goal; key: string; icon: ReactNode }[] = [
+type GoalDef = {
+  value: Goal;
+  key: string;
+  ring: string; // selected border/label colour
+  tint: string; // selected background tint
+  from: string; // gradient start
+  to: string; // gradient end
+  symbol: ReactNode; // white symbol drawn on the coloured disc
+};
+
+// White symbols are drawn on a coloured gradient disc (viewBox 0 0 48 48,
+// disc centred at 24,24 r=22). One element per icon carries a `gs-play …`
+// class so its animation only runs on hover / when selected.
+const GOALS: GoalDef[] = [
   {
     value: "WEIGHT_LOSS",
     key: "weightLoss",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="16" width="18" height="4" rx="1.5" />
+    ring: "#0891b2",
+    tint: "rgba(8,145,178,0.10)",
+    from: "#2dd4bf",
+    to: "#0891b2",
+    symbol: (
+      <>
         <g className="gs-play gs-drop">
-          <line x1="12" y1="4" x2="12" y2="13" />
-          <polyline points="8 9 12 13 16 9" />
+          <line x1="24" y1="14" x2="24" y2="28" />
+          <polyline points="18 23 24 29 30 23" fill="none" />
         </g>
-      </svg>
+        <rect x="15" y="32" width="18" height="3.4" rx="1.7" stroke="none" fill="#fff" />
+      </>
     ),
   },
   {
     value: "MUSCLE_GAIN",
     key: "muscleGain",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <g className="gs-play gs-bob">
-          <line x1="7" y1="12" x2="17" y2="12" />
-          <line x1="6" y1="9" x2="6" y2="15" />
-          <line x1="3.5" y1="10.5" x2="3.5" y2="13.5" />
-          <line x1="18" y1="9" x2="18" y2="15" />
-          <line x1="20.5" y1="10.5" x2="20.5" y2="13.5" />
-        </g>
-      </svg>
+    ring: "#ea580c",
+    tint: "rgba(249,115,22,0.10)",
+    from: "#fbbf24",
+    to: "#f97316",
+    symbol: (
+      <g className="gs-play gs-bob">
+        <line x1="17" y1="24" x2="31" y2="24" />
+        <line x1="16" y1="19" x2="16" y2="29" />
+        <line x1="12.5" y1="21" x2="12.5" y2="27" />
+        <line x1="32" y1="19" x2="32" y2="29" />
+        <line x1="35.5" y1="21" x2="35.5" y2="27" />
+      </g>
     ),
   },
   {
     value: "STRENGTH",
     key: "strength",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <g className="gs-play gs-beat">
-          <line x1="2" y1="12" x2="22" y2="12" />
-          <rect x="4" y="8" width="2.6" height="8" rx="1" />
-          <rect x="7.6" y="9.5" width="2" height="5" rx="1" />
-          <rect x="17.4" y="8" width="2.6" height="8" rx="1" />
-          <rect x="14.4" y="9.5" width="2" height="5" rx="1" />
-        </g>
-      </svg>
+    ring: "#e11d48",
+    tint: "rgba(225,29,72,0.10)",
+    from: "#fb7185",
+    to: "#e11d48",
+    symbol: (
+      <g className="gs-play gs-beat">
+        <line x1="10" y1="24" x2="38" y2="24" />
+        <rect x="13" y="18" width="3.4" height="12" rx="1.4" stroke="none" fill="#fff" />
+        <rect x="18" y="20.5" width="2.6" height="7" rx="1.2" stroke="none" fill="#fff" />
+        <rect x="31.6" y="18" width="3.4" height="12" rx="1.4" stroke="none" fill="#fff" />
+        <rect x="27.4" y="20.5" width="2.6" height="7" rx="1.2" stroke="none" fill="#fff" />
+      </g>
     ),
   },
   {
     value: "ENDURANCE",
     key: "endurance",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline
-          className="gs-play gs-dash"
-          points="2 12 7 12 9.5 6 12.5 18 15 12 22 12"
-        />
-      </svg>
+    ring: "#4f46e5",
+    tint: "rgba(79,70,229,0.10)",
+    from: "#38bdf8",
+    to: "#4f46e5",
+    symbol: (
+      <polyline
+        className="gs-play gs-dash"
+        points="12 24 18 24 21 15 26 33 29 24 36 24"
+        fill="none"
+      />
     ),
   },
   {
     value: "HEALTH",
     key: "health",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path
-          className="gs-play gs-beat"
-          d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"
-        />
-      </svg>
+    ring: "#db2777",
+    tint: "rgba(219,39,119,0.10)",
+    from: "#f472b6",
+    to: "#db2777",
+    symbol: (
+      <path
+        className="gs-play gs-beat"
+        d="M24 33c-1.2-1-9-5.6-9-11.5a4.8 4.8 0 0 1 9-2.6 4.8 4.8 0 0 1 9 2.6C33 27.4 25.2 32 24 33z"
+        stroke="none"
+        fill="#fff"
+      />
     ),
   },
   {
     value: "GENERAL",
     key: "general",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle className="gs-play gs-pulse" cx="12" cy="12" r="9" />
-        <circle cx="12" cy="12" r="6" />
-        <circle cx="12" cy="12" r="2.5" />
-      </svg>
+    ring: "#7c3aed",
+    tint: "rgba(124,58,237,0.10)",
+    from: "#a78bfa",
+    to: "#7c3aed",
+    symbol: (
+      <>
+        <circle className="gs-play gs-pulse" cx="24" cy="24" r="11" fill="none" />
+        <circle cx="24" cy="24" r="7" fill="none" />
+        <circle cx="24" cy="24" r="2.6" stroke="none" fill="#fff" />
+      </>
     ),
   },
 ];
@@ -113,27 +142,46 @@ export function GoalSelector({
         aria-label={t("title")}
         className="grid grid-cols-2 gap-2.5 sm:grid-cols-3"
       >
-        {GOALS.map(({ value: g, key, icon }) => {
-          const selected = value === g;
+        {GOALS.map((g) => {
+          const selected = value === g.value;
+          const gradId = `gs-grad-${g.key}`;
           return (
             <button
-              key={g}
+              key={g.value}
               type="button"
               role="radio"
               aria-checked={selected}
-              onClick={() => onChange(g)}
+              onClick={() => onChange(g.value)}
+              style={
+                selected
+                  ? { borderColor: g.ring, backgroundColor: g.tint, color: g.ring }
+                  : undefined
+              }
               className={`gs-card group flex flex-col items-center gap-2 rounded-xl border p-3 text-center transition-colors ${
                 selected
-                  ? "border-emerald-500 bg-emerald-500/10 text-emerald-700"
+                  ? ""
                   : "border-foreground/15 text-foreground/80 hover:border-foreground/40"
               }`}
             >
-              <span className="h-8 w-8" aria-hidden>
-                {icon}
-              </span>
-              <span className="text-xs font-medium leading-tight">
-                {t(key)}
-              </span>
+              <svg
+                viewBox="0 0 48 48"
+                className="h-11 w-11"
+                aria-hidden
+                stroke="#fff"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <defs>
+                  <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stopColor={g.from} />
+                    <stop offset="1" stopColor={g.to} />
+                  </linearGradient>
+                </defs>
+                <circle cx="24" cy="24" r="22" fill={`url(#${gradId})`} stroke="none" />
+                {g.symbol}
+              </svg>
+              <span className="text-xs font-medium leading-tight">{t(g.key)}</span>
             </button>
           );
         })}
@@ -154,7 +202,7 @@ const GS_STYLE = `
 @keyframes gsDrop { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
 @keyframes gsBob { 0%,100% { transform: translateY(2px); } 50% { transform: translateY(-3px); } }
 @keyframes gsBeat { 0%,100% { transform: scale(1); } 22% { transform: scale(1.16); } 40% { transform: scale(1); } }
-@keyframes gsPulse { 0% { transform: scale(.55); opacity: .85; } 100% { transform: scale(1.05); opacity: 0; } }
+@keyframes gsPulse { 0% { transform: scale(.5); opacity: .9; } 100% { transform: scale(1.15); opacity: 0; } }
 @keyframes gsDash { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) {
   .gs-play { animation: none !important; }
