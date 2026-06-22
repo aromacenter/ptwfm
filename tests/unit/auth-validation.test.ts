@@ -88,4 +88,35 @@ describe("registerSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("accepts a client with a valid goal", () => {
+    const result = registerSchema.safeParse({
+      ...base,
+      role: "CLIENT",
+      healthConsent: true,
+      goal: "WEIGHT_LOSS",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.goal).toBe("WEIGHT_LOSS");
+  });
+
+  it("treats goal as optional", () => {
+    const result = registerSchema.safeParse({
+      ...base,
+      role: "CLIENT",
+      healthConsent: true,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.goal).toBeUndefined();
+  });
+
+  it("rejects an unknown goal value", () => {
+    const result = registerSchema.safeParse({
+      ...base,
+      role: "CLIENT",
+      healthConsent: true,
+      goal: "BECOME_RICH",
+    });
+    expect(result.success).toBe(false);
+  });
 });

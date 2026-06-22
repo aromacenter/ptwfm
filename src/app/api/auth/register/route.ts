@@ -29,7 +29,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const { name, email, password, role, healthConsent } = parsed.data;
+  const { name, email, password, role, healthConsent, goal } = parsed.data;
+  // Goals are a client concept; ignore any value sent for a trainer sign-up.
+  const userGoal = role === "CLIENT" ? (goal ?? null) : null;
 
   try {
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -45,7 +47,7 @@ export async function POST(request: Request) {
 
     const user = await prisma.$transaction(async (tx) => {
       const created = await tx.user.create({
-        data: { name, email, passwordHash, role },
+        data: { name, email, passwordHash, role, goal: userGoal },
       });
 
       // Record explicit consents (UK GDPR). Terms for everyone; health data
@@ -82,7 +84,7 @@ export async function POST(request: Request) {
           action: "USER_REGISTER",
           entity: "User",
           entityId: created.id,
-          metadata: { role, healthConsent },
+          metadata: { role, healthConsent, goal: userGoal },
         },
       });
 

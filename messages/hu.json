@@ -332,5 +332,14 @@
     "online": "Online is jöhet",
     "markResponded": "Megválaszoltként jelölés",
     "responded": "Megválaszolva"
+  },
+  "goals": {
+    "title": "Mi a fő célod?",
+    "weightLoss": "Súlyvesztés",
+    "muscleGain": "Izomépítés",
+    "strength": "Erő növelése",
+    "endurance": "Állóképesség",
+    "health": "Egészségesebb élet",
+    "general": "Általános fitnesz"
   }
 }

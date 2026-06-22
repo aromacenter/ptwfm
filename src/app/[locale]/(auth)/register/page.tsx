@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
+import { GoalSelector, type Goal } from "@/components/goal-selector";
 
 export default function RegisterPage() {
   const t = useTranslations();
   const router = useRouter();
   const [role, setRole] = useState<"CLIENT" | "TRAINER">("CLIENT");
+  const [goal, setGoal] = useState<Goal | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
 
@@ -21,6 +23,7 @@ export default function RegisterPage() {
       email: String(form.get("email")),
       password: String(form.get("password")),
       role,
+      goal: role === "CLIENT" && goal ? goal : undefined,
       termsConsent: form.get("termsConsent") === "on",
       healthConsent: form.get("healthConsent") === "on",
     };
@@ -123,6 +126,10 @@ export default function RegisterPage() {
             className="w-full rounded border border-foreground/20 bg-transparent px-3 py-2"
           />
         </div>
+
+        {role === "CLIENT" && (
+          <GoalSelector value={goal} onChange={setGoal} />
+        )}
 
         {role === "CLIENT" && (
           <label className="flex items-start gap-2 text-sm">

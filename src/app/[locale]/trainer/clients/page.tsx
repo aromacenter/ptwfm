@@ -25,7 +25,23 @@ export default async function ClientsPage({
   }
 
   const t = await getTranslations("clients");
+  const tg = await getTranslations("goals");
   const trainerId = (await trainerProfileIdForUser(user.id)) ?? "";
+
+  const goalKey: Record<string, string> = {
+    WEIGHT_LOSS: "weightLoss",
+    MUSCLE_GAIN: "muscleGain",
+    STRENGTH: "strength",
+    ENDURANCE: "endurance",
+    HEALTH: "health",
+    GENERAL: "general",
+  };
+  const GoalBadge = ({ goal }: { goal: string | null }) =>
+    goal ? (
+      <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700">
+        {tg(goalKey[goal])}
+      </span>
+    ) : null;
 
   const [pendingRaw, active] = await Promise.all([
     // Consultations with clients not yet dedicated to anyone.
@@ -39,12 +55,14 @@ export default async function ClientsPage({
       orderBy: { startAt: "asc" },
       select: {
         startAt: true,
-        client: { select: { id: true, user: { select: { name: true } } } },
+        client: {
+          select: { id: true, user: { select: { name: true, goal: true } } },
+        },
       },
     }),
     prisma.clientProfile.findMany({
       where: { trainerId },
-      include: { user: { select: { name: true, email: true } } },
+      include: { user: { select: { name: true, email: true, goal: true } } },
       orderBy: { createdAt: "desc" },
     }),
   ]);
@@ -71,7 +89,10 @@ export default async function ClientsPage({
                 className="flex items-center justify-between gap-4 px-4 py-3 text-sm"
               >
                 <span>
-                  <strong>{p.client.user.name}</strong>
+                  <span className="flex items-center gap-2">
+                    <strong>{p.client.user.name}</strong>
+                    <GoalBadge goal={p.client.user.goal} />
+                  </span>
                   <span className="block text-xs text-foreground/60">
                     {t("consultationLabel")}: {formatDateTime(p.startAt, locale)}
                   </span>
@@ -94,9 +115,10 @@ export default async function ClientsPage({
                 key={c.id}
                 className="flex items-center justify-between gap-4 px-4 py-3 text-sm"
               >
-                <span>
+                <span className="flex flex-wrap items-center gap-2">
                   <strong>{c.user.name}</strong>
-                  <span className="text-foreground/60"> · {c.user.email}</span>
+                  <GoalBadge goal={c.user.goal} />
+                  <span className="text-foreground/60">· {c.user.email}</span>
                 </span>
                 <div className="flex shrink-0 items-center gap-2">
                   <Link

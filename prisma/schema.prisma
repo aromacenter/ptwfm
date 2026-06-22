@@ -81,6 +81,16 @@ enum DataRequestType {
   ERASURE
 }
 
+// A client's primary training goal, chosen at sign-up.
+enum TrainingGoal {
+  WEIGHT_LOSS
+  MUSCLE_GAIN
+  STRENGTH
+  ENDURANCE
+  HEALTH // healthier living / wellbeing
+  GENERAL // general fitness
+}
+
 enum DataRequestStatus {
   PENDING
   PROCESSING
@@ -99,6 +109,7 @@ model User {
   role         Role     @default(CLIENT)
   name         String
   phone        String?
+  goal         TrainingGoal? // client's primary goal, set at sign-up
   locale       String   @default("en") // "en" | "hu"
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

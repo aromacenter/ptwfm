@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+// Client training goals (must match the Prisma TrainingGoal enum).
+export const TRAINING_GOALS = [
+  "WEIGHT_LOSS",
+  "MUSCLE_GAIN",
+  "STRENGTH",
+  "ENDURANCE",
+  "HEALTH",
+  "GENERAL",
+] as const;
+
 // Error messages are i18n keys; the UI maps them via next-intl.
 export const loginSchema = z.object({
   email: z.string().email("validation.emailInvalid"),
@@ -12,6 +22,8 @@ export const registerSchema = z
     email: z.string().email("validation.emailInvalid"),
     password: z.string().min(8, "validation.passwordTooShort"),
     role: z.enum(["CLIENT", "TRAINER"]),
+    // Optional primary goal chosen at sign-up (clients only).
+    goal: z.enum(TRAINING_GOALS).optional(),
     // Terms (incl. 24h cancellation policy) must be accepted by everyone.
     termsConsent: z.literal(true, {
       message: "validation.consentRequired",

@@ -332,5 +332,14 @@
     "online": "Open to online",
     "markResponded": "Mark as responded",
     "responded": "Responded"
+  },
+  "goals": {
+    "title": "What's your main goal?",
+    "weightLoss": "Weight loss",
+    "muscleGain": "Build muscle",
+    "strength": "Get stronger",
+    "endurance": "Fitness & stamina",
+    "health": "Healthier living",
+    "general": "General fitness"
   }
 }
