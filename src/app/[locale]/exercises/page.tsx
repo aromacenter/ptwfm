@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
-import { ExerciseAnimation } from "@/components/exercise-animation";
+import { ExerciseVisual } from "@/components/exercise-visual";
 import { MUSCLE_ORDER, EQUIPMENT_ORDER, isMuscle, isEquipment } from "@/lib/exercises/meta";
 
 export const dynamic = "force-dynamic";
@@ -117,10 +117,11 @@ export default async function ExercisesPage({
                 className="flex h-full flex-col gap-2 rounded-xl border border-foreground/10 p-4 transition-colors hover:border-foreground/30"
               >
                 <span className="flex items-center gap-3">
-                  <ExerciseAnimation
+                  <ExerciseVisual
                     slug={e.slug}
                     category={e.category}
-                    className="h-14 w-12 shrink-0 text-emerald-600"
+                    alt={e.name}
+                    className="h-16 w-20 shrink-0 rounded-lg bg-white"
                   />
                   <span className="font-medium">{e.name}</span>
                 </span>
@@ -142,6 +143,8 @@ export default async function ExercisesPage({
           ))}
         </ul>
       )}
+
+      <p className="pt-2 text-xs text-foreground/40">{t("imageCredit")}</p>
     </main>
   );
 }

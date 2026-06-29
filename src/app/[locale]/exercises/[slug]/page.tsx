@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { BodyMap } from "@/components/body-map";
-import { ExerciseAnimation } from "@/components/exercise-animation";
+import { ExerciseVisual } from "@/components/exercise-visual";
 
 export const dynamic = "force-dynamic";
 
@@ -83,11 +83,12 @@ export default async function ExerciseDetailPage({
         </p>
       </div>
 
-      <section className="flex justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
-        <ExerciseAnimation
+      <section className="flex justify-center rounded-xl border border-foreground/10 bg-white p-5">
+        <ExerciseVisual
           slug={exercise.slug}
           category={exercise.category}
-          className="h-56 w-auto text-emerald-600"
+          alt={exercise.name}
+          className="aspect-[3/2] w-full max-w-sm"
         />
       </section>
 

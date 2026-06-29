@@ -400,6 +400,7 @@
     "category": "Kategória",
     "backToLibrary": "Összes gyakorlat",
     "browseAll": "Böngészd a gyakorlat-tárat",
-    "count": "{count, plural, one {# gyakorlat} other {# gyakorlat}}"
+    "count": "{count, plural, one {# gyakorlat} other {# gyakorlat}}",
+    "imageCredit": "Gyakorlat-képek: free-exercise-db (közkincs)."
   }
 }

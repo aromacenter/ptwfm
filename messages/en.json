@@ -400,6 +400,7 @@
     "category": "Category",
     "backToLibrary": "All exercises",
     "browseAll": "Browse the exercise library",
-    "count": "{count, plural, one {# exercise} other {# exercises}}"
+    "count": "{count, plural, one {# exercise} other {# exercises}}",
+    "imageCredit": "Exercise images: free-exercise-db (public domain)."
   }
 }

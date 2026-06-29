@@ -1,0 +1,150 @@
+{
+  "barbell-bench-press": [
+    "/exercises/barbell-bench-press/0.jpg",
+    "/exercises/barbell-bench-press/1.jpg"
+  ],
+  "dumbbell-bench-press": [
+    "/exercises/dumbbell-bench-press/0.jpg",
+    "/exercises/dumbbell-bench-press/1.jpg"
+  ],
+  "incline-dumbbell-press": [
+    "/exercises/incline-dumbbell-press/0.jpg",
+    "/exercises/incline-dumbbell-press/1.jpg"
+  ],
+  "push-up": [
+    "/exercises/push-up/0.jpg",
+    "/exercises/push-up/1.jpg"
+  ],
+  "overhead-press": [
+    "/exercises/overhead-press/0.jpg",
+    "/exercises/overhead-press/1.jpg"
+  ],
+  "dumbbell-shoulder-press": [
+    "/exercises/dumbbell-shoulder-press/0.jpg",
+    "/exercises/dumbbell-shoulder-press/1.jpg"
+  ],
+  "lateral-raise": [
+    "/exercises/lateral-raise/0.jpg",
+    "/exercises/lateral-raise/1.jpg"
+  ],
+  "triceps-pushdown": [
+    "/exercises/triceps-pushdown/0.jpg",
+    "/exercises/triceps-pushdown/1.jpg"
+  ],
+  "dips": [
+    "/exercises/dips/0.jpg",
+    "/exercises/dips/1.jpg"
+  ],
+  "deadlift": [
+    "/exercises/deadlift/0.jpg",
+    "/exercises/deadlift/1.jpg"
+  ],
+  "pull-up": [
+    "/exercises/pull-up/0.jpg",
+    "/exercises/pull-up/1.jpg"
+  ],
+  "lat-pulldown": [
+    "/exercises/lat-pulldown/0.jpg",
+    "/exercises/lat-pulldown/1.jpg"
+  ],
+  "bent-over-barbell-row": [
+    "/exercises/bent-over-barbell-row/0.jpg",
+    "/exercises/bent-over-barbell-row/1.jpg"
+  ],
+  "seated-cable-row": [
+    "/exercises/seated-cable-row/0.jpg",
+    "/exercises/seated-cable-row/1.jpg"
+  ],
+  "dumbbell-row": [
+    "/exercises/dumbbell-row/0.jpg",
+    "/exercises/dumbbell-row/1.jpg"
+  ],
+  "face-pull": [
+    "/exercises/face-pull/0.jpg",
+    "/exercises/face-pull/1.jpg"
+  ],
+  "barbell-biceps-curl": [
+    "/exercises/barbell-biceps-curl/0.jpg",
+    "/exercises/barbell-biceps-curl/1.jpg"
+  ],
+  "dumbbell-hammer-curl": [
+    "/exercises/dumbbell-hammer-curl/0.jpg",
+    "/exercises/dumbbell-hammer-curl/1.jpg"
+  ],
+  "dumbbell-shrug": [
+    "/exercises/dumbbell-shrug/0.jpg",
+    "/exercises/dumbbell-shrug/1.jpg"
+  ],
+  "back-squat": [
+    "/exercises/back-squat/0.jpg",
+    "/exercises/back-squat/1.jpg"
+  ],
+  "front-squat": [
+    "/exercises/front-squat/0.jpg",
+    "/exercises/front-squat/1.jpg"
+  ],
+  "goblet-squat": [
+    "/exercises/goblet-squat/0.jpg",
+    "/exercises/goblet-squat/1.jpg"
+  ],
+  "romanian-deadlift": [
+    "/exercises/romanian-deadlift/0.jpg",
+    "/exercises/romanian-deadlift/1.jpg"
+  ],
+  "leg-press": [
+    "/exercises/leg-press/0.jpg",
+    "/exercises/leg-press/1.jpg"
+  ],
+  "walking-lunge": [
+    "/exercises/walking-lunge/0.jpg",
+    "/exercises/walking-lunge/1.jpg"
+  ],
+  "bulgarian-split-squat": [
+    "/exercises/bulgarian-split-squat/0.jpg",
+    "/exercises/bulgarian-split-squat/1.jpg"
+  ],
+  "leg-curl": [
+    "/exercises/leg-curl/0.jpg",
+    "/exercises/leg-curl/1.jpg"
+  ],
+  "leg-extension": [
+    "/exercises/leg-extension/0.jpg",
+    "/exercises/leg-extension/1.jpg"
+  ],
+  "hip-thrust": [
+    "/exercises/hip-thrust/0.jpg",
+    "/exercises/hip-thrust/1.jpg"
+  ],
+  "standing-calf-raise": [
+    "/exercises/standing-calf-raise/0.jpg",
+    "/exercises/standing-calf-raise/1.jpg"
+  ],
+  "plank": [
+    "/exercises/plank/0.jpg",
+    "/exercises/plank/1.jpg"
+  ],
+  "hanging-leg-raise": [
+    "/exercises/hanging-leg-raise/0.jpg",
+    "/exercises/hanging-leg-raise/1.jpg"
+  ],
+  "cable-crunch": [
+    "/exercises/cable-crunch/0.jpg",
+    "/exercises/cable-crunch/1.jpg"
+  ],
+  "russian-twist": [
+    "/exercises/russian-twist/0.jpg",
+    "/exercises/russian-twist/1.jpg"
+  ],
+  "back-extension": [
+    "/exercises/back-extension/0.jpg",
+    "/exercises/back-extension/1.jpg"
+  ],
+  "kettlebell-swing": [
+    "/exercises/kettlebell-swing/0.jpg",
+    "/exercises/kettlebell-swing/1.jpg"
+  ],
+  "mountain-climber": [
+    "/exercises/mountain-climber/0.jpg",
+    "/exercises/mountain-climber/1.jpg"
+  ]
+}
