@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 export const runDbTests = !!process.env.RUN_DB_TESTS;
 
 const TABLES = [
+  "Exercise",
   "TrainerRequestResponse",
   "TrainerRequest",
   "Review",

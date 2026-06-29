@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { redirect, Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth/session";
 import { computeNutritionTotals } from "@/lib/plans/nutrition";
@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 
 type WorkoutData = {
   notes?: string;
-  days: { label: string; exercises: { name: string; sets: string; reps: string }[] }[];
+  days: {
+    label: string;
+    exercises: { name: string; slug?: string; sets: string; reps: string }[];
+  }[];
 };
 type NutritionData = {
   meals: {
@@ -39,6 +42,7 @@ export default async function MyPlansPage({
   }
 
   const t = await getTranslations("plans");
+  const tm = await getTranslations("muscles");
   const client = await prisma.clientProfile.findUnique({
     where: { userId: user.id },
     select: { id: true },
@@ -56,6 +60,24 @@ export default async function MyPlansPage({
         }),
       ])
     : [[], []];
+
+  // Resolve any library-linked exercises so we can show muscles + a link.
+  const slugs = [
+    ...new Set(
+      workouts.flatMap((w) =>
+        ((w.data as WorkoutData).days ?? []).flatMap((d) =>
+          (d.exercises ?? []).map((e) => e.slug).filter((s): s is string => !!s),
+        ),
+      ),
+    ),
+  ];
+  const libList = slugs.length
+    ? await prisma.exercise.findMany({
+        where: { slug: { in: slugs } },
+        select: { slug: true, primaryMuscles: true },
+      })
+    : [];
+  const libBySlug = new Map(libList.map((e) => [e.slug, e.primaryMuscles]));
 
   const empty = workouts.length === 0 && nutrition.length === 0;
 
@@ -82,19 +104,43 @@ export default async function MyPlansPage({
                       {day.label}
                     </p>
                     <ul className="mt-1 space-y-1 text-sm text-foreground/85">
-                      {day.exercises?.map((ex, j) => (
-                        <li key={j}>
-                          {ex.name}
-                          {(ex.sets || ex.reps) && (
-                            <span className="text-foreground/60">
-                              {" "}
-                              — {ex.sets}
-                              {ex.sets && ex.reps ? " × " : ""}
-                              {ex.reps}
-                            </span>
-                          )}
-                        </li>
-                      ))}
+                      {day.exercises?.map((ex, j) => {
+                        const muscles = ex.slug ? libBySlug.get(ex.slug) : undefined;
+                        return (
+                          <li key={j}>
+                            {ex.slug ? (
+                              <Link
+                                href={`/exercises/${ex.slug}`}
+                                className="underline decoration-foreground/20 underline-offset-2"
+                              >
+                                {ex.name}
+                              </Link>
+                            ) : (
+                              ex.name
+                            )}
+                            {(ex.sets || ex.reps) && (
+                              <span className="text-foreground/60">
+                                {" "}
+                                — {ex.sets}
+                                {ex.sets && ex.reps ? " × " : ""}
+                                {ex.reps}
+                              </span>
+                            )}
+                            {muscles && muscles.length > 0 && (
+                              <span className="ml-1.5 inline-flex flex-wrap gap-1">
+                                {muscles.map((m) => (
+                                  <span
+                                    key={m}
+                                    className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-xs font-medium text-emerald-700"
+                                  >
+                                    {tm(m)}
+                                  </span>
+                                ))}
+                              </span>
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}

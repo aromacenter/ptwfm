@@ -81,6 +81,53 @@ enum DataRequestType {
   ERASURE
 }
 
+// Muscle groups an exercise targets (factual taxonomy).
+enum MuscleGroup {
+  CHEST
+  UPPER_BACK
+  LATS
+  LOWER_BACK
+  TRAPS
+  SHOULDERS
+  BICEPS
+  TRICEPS
+  FOREARMS
+  ABS
+  OBLIQUES
+  GLUTES
+  QUADS
+  HAMSTRINGS
+  CALVES
+  ADDUCTORS
+  NECK
+  FULL_BODY
+}
+
+// Equipment an exercise needs.
+enum Equipment {
+  BARBELL
+  DUMBBELL
+  KETTLEBELL
+  CABLE
+  MACHINE
+  BODYWEIGHT
+  RESISTANCE_BAND
+  PLATE
+  BENCH
+  OTHER
+}
+
+// Movement category for grouping/filtering.
+enum ExerciseCategory {
+  PUSH
+  PULL
+  LEGS
+  CORE
+  CARDIO
+  FULL_BODY
+  MOBILITY
+}
+
 // A client's primary training goal, chosen at sign-up.
 enum TrainingGoal {
   WEIGHT_LOSS
@@ -500,4 +547,21 @@ model Setting {
   value     String
   encrypted Boolean  @default(false)
   updatedAt DateTime @updatedAt
+}
+
+// Global exercise library. Holds factual data (which muscles an exercise
+// works, equipment) plus our own short cues — no third-party text or media.
+model Exercise {
+  id              String           @id @default(cuid())
+  slug            String           @unique
+  name            String
+  category        ExerciseCategory
+  equipment       Equipment
+  primaryMuscles  MuscleGroup[]    @default([])
+  secondaryMuscles MuscleGroup[]   @default([])
+  cues            String[]         @default([]) // our own short how-to cues
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([category])
 }

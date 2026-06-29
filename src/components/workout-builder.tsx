@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 
-type Exercise = { name: string; sets: string; reps: string; notes: string };
+type Exercise = { name: string; slug: string; sets: string; reps: string; notes: string };
 type Day = { label: string; exercises: Exercise[] };
 type Program = { id: string; title: string; data: { notes?: string; days: Day[] } };
 
-const emptyExercise = (): Exercise => ({ name: "", sets: "", reps: "", notes: "" });
+type LibExercise = { slug: string; name: string; primaryMuscles: string[] };
+
+const emptyExercise = (): Exercise => ({ name: "", slug: "", sets: "", reps: "", notes: "" });
 const emptyDay = (): Day => ({ label: "", exercises: [emptyExercise()] });
 
 export function WorkoutBuilder({
@@ -18,12 +20,32 @@ export function WorkoutBuilder({
   initial: Program[];
 }) {
   const t = useTranslations("plans");
+  const tm = useTranslations("muscles");
   const [programs, setPrograms] = useState<Program[]>(initial);
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
   const [days, setDays] = useState<Day[]>([emptyDay()]);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState(false);
+  const [lib, setLib] = useState<LibExercise[]>([]);
+
+  // Load the exercise library once for the name picker (datalist + muscles).
+  useEffect(() => {
+    let active = true;
+    fetch("/api/exercises")
+      .then((r) => (r.ok ? r.json() : { exercises: [] }))
+      .then((d: { exercises: LibExercise[] }) => {
+        if (active) setLib(d.exercises);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Resolve a typed exercise name to its library entry (exact, case-insensitive).
+  const matchLib = (name: string): LibExercise | undefined =>
+    lib.find((e) => e.name.toLowerCase() === name.trim().toLowerCase());
 
   function patchDay(i: number, patch: Partial<Day>) {
     setDays((d) => d.map((day, idx) => (idx === i ? { ...day, ...patch } : day)));
@@ -73,6 +95,11 @@ export function WorkoutBuilder({
 
   return (
     <div className="space-y-4">
+      <datalist id="exercise-lib">
+        {lib.map((e) => (
+          <option key={e.slug} value={e.name} />
+        ))}
+      </datalist>
       {programs.length === 0 ? (
         <p className="text-sm text-foreground/60">{t("noWorkouts")}</p>
       ) : (
@@ -138,11 +165,20 @@ export function WorkoutBuilder({
                   </button>
                 )}
               </div>
-              {day.exercises.map((ex, ei) => (
-                <div key={ei} className="flex flex-wrap gap-2">
+              {day.exercises.map((ex, ei) => {
+                const matched = ex.slug ? matchLib(ex.name) : undefined;
+                return (
+                <div key={ei} className="flex flex-wrap items-center gap-2">
                   <input
                     value={ex.name}
-                    onChange={(e) => patchExercise(di, ei, { name: e.target.value })}
+                    list="exercise-lib"
+                    onChange={(e) => {
+                      const name = e.target.value;
+                      patchExercise(di, ei, {
+                        name,
+                        slug: matchLib(name)?.slug ?? "",
+                      });
+                    }}
                     placeholder={t("exerciseName")}
                     className="min-w-[8rem] flex-1 rounded border border-foreground/20 bg-transparent px-2 py-1.5 text-sm"
                   />
@@ -169,8 +205,21 @@ export function WorkoutBuilder({
                   >
                     ✕
                   </button>
+                  {matched && (
+                    <span className="flex w-full flex-wrap gap-1.5">
+                      {matched.primaryMuscles.map((m) => (
+                        <span
+                          key={m}
+                          className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-700"
+                        >
+                          {tm(m)}
+                        </span>
+                      ))}
+                    </span>
+                  )}
                 </div>
-              ))}
+                );
+              })}
               <button
                 type="button"
                 onClick={() =>

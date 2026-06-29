@@ -11,13 +11,15 @@ export async function Nav() {
   const user = await getCurrentUser();
   const t = await getTranslations();
 
-  let links: { href: string; label: string }[] = [];
+  const exercisesLink = { href: "/exercises", label: t("nav.exercises") };
+  let links: { href: string; label: string }[] = [exercisesLink];
   if (user?.role === "TRAINER") {
     links = [
       { href: "/trainer/dashboard", label: t("nav.dashboard") },
       { href: "/trainer/availability", label: t("nav.availability") },
       { href: "/trainer/clients", label: t("nav.clients") },
       { href: "/trainer/insights", label: t("nav.insights") },
+      exercisesLink,
       { href: "/privacy", label: t("nav.privacy") },
     ];
   } else if (user?.role === "CLIENT") {
@@ -33,6 +35,7 @@ export async function Nav() {
         : { href: "/trainers", label: t("nav.findTrainer") },
       { href: "/my-bookings", label: t("nav.bookings") },
       { href: "/my-plans", label: t("nav.myPlans") },
+      exercisesLink,
       { href: "/billing", label: t("nav.billing") },
       { href: "/privacy", label: t("nav.privacy") },
     ];

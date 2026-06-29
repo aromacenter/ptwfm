@@ -23,7 +23,8 @@
     "clients": "Clients",
     "insights": "Insights",
     "admin": "Admin",
-    "myPlans": "Plans"
+    "myPlans": "Plans",
+    "exercises": "Exercises"
   },
   "admin": {
     "title": "Integrations",
@@ -341,5 +342,64 @@
     "endurance": "Fitness & stamina",
     "health": "Healthier living",
     "general": "General fitness"
+  },
+  "muscles": {
+    "CHEST": "Chest",
+    "UPPER_BACK": "Upper back",
+    "LATS": "Lats",
+    "LOWER_BACK": "Lower back",
+    "TRAPS": "Traps",
+    "SHOULDERS": "Shoulders",
+    "BICEPS": "Biceps",
+    "TRICEPS": "Triceps",
+    "FOREARMS": "Forearms",
+    "ABS": "Abs",
+    "OBLIQUES": "Obliques",
+    "GLUTES": "Glutes",
+    "QUADS": "Quads",
+    "HAMSTRINGS": "Hamstrings",
+    "CALVES": "Calves",
+    "ADDUCTORS": "Adductors",
+    "NECK": "Neck",
+    "FULL_BODY": "Full body"
+  },
+  "equipment": {
+    "BARBELL": "Barbell",
+    "DUMBBELL": "Dumbbell",
+    "KETTLEBELL": "Kettlebell",
+    "CABLE": "Cable",
+    "MACHINE": "Machine",
+    "BODYWEIGHT": "Bodyweight",
+    "RESISTANCE_BAND": "Resistance band",
+    "PLATE": "Weight plate",
+    "BENCH": "Bench",
+    "OTHER": "Other"
+  },
+  "exerciseCategory": {
+    "PUSH": "Push",
+    "PULL": "Pull",
+    "LEGS": "Legs",
+    "CORE": "Core",
+    "CARDIO": "Cardio",
+    "FULL_BODY": "Full body",
+    "MOBILITY": "Mobility"
+  },
+  "exercises": {
+    "title": "Exercise library",
+    "intro": "Browse exercises and the muscles they work.",
+    "search": "Search",
+    "searchPlaceholder": "Search exercises",
+    "allMuscles": "All muscles",
+    "allEquipment": "All equipment",
+    "noResults": "No exercises match your filters.",
+    "musclesWorked": "Muscles worked",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "howTo": "How to",
+    "equipment": "Equipment",
+    "category": "Category",
+    "backToLibrary": "All exercises",
+    "browseAll": "Browse the exercise library",
+    "count": "{count, plural, one {# exercise} other {# exercises}}"
   }
 }

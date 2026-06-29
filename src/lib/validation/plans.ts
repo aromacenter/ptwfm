@@ -13,6 +13,9 @@ export const workoutSchema = z.object({
           .array(
             z.object({
               name: z.string().trim().min(1).max(200),
+              // Optional reference to a library Exercise (links to its page /
+              // muscle info). Free-text exercises just leave this empty.
+              slug: z.string().trim().max(100).default(""),
               sets: z.string().trim().max(20).default(""),
               reps: z.string().trim().max(50).default(""),
               notes: z.string().trim().max(300).default(""),

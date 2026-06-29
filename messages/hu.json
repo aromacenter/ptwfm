@@ -23,7 +23,8 @@
     "clients": "Ügyfelek",
     "insights": "Elemzés",
     "admin": "Admin",
-    "myPlans": "Terveim"
+    "myPlans": "Terveim",
+    "exercises": "Gyakorlatok"
   },
   "admin": {
     "title": "Integrációk",
@@ -341,5 +342,64 @@
     "endurance": "Állóképesség",
     "health": "Egészségesebb élet",
     "general": "Általános fitnesz"
+  },
+  "muscles": {
+    "CHEST": "Mell",
+    "UPPER_BACK": "Felső hát",
+    "LATS": "Széles hátizom",
+    "LOWER_BACK": "Alsó hát",
+    "TRAPS": "Csuklyásizom",
+    "SHOULDERS": "Váll",
+    "BICEPS": "Bicepsz",
+    "TRICEPS": "Tricepsz",
+    "FOREARMS": "Alkar",
+    "ABS": "Has",
+    "OBLIQUES": "Ferde hasizom",
+    "GLUTES": "Farizom",
+    "QUADS": "Combfeszítő",
+    "HAMSTRINGS": "Combhajlító",
+    "CALVES": "Vádli",
+    "ADDUCTORS": "Közelítő izmok",
+    "NECK": "Nyak",
+    "FULL_BODY": "Teljes test"
+  },
+  "equipment": {
+    "BARBELL": "Súlyzórúd",
+    "DUMBBELL": "Kézisúlyzó",
+    "KETTLEBELL": "Kettlebell",
+    "CABLE": "Kábel",
+    "MACHINE": "Gép",
+    "BODYWEIGHT": "Saját testsúly",
+    "RESISTANCE_BAND": "Gumiszalag",
+    "PLATE": "Súlytárcsa",
+    "BENCH": "Pad",
+    "OTHER": "Egyéb"
+  },
+  "exerciseCategory": {
+    "PUSH": "Nyomás",
+    "PULL": "Húzás",
+    "LEGS": "Láb",
+    "CORE": "Törzs",
+    "CARDIO": "Kardió",
+    "FULL_BODY": "Teljes test",
+    "MOBILITY": "Mozgékonyság"
+  },
+  "exercises": {
+    "title": "Gyakorlat-tár",
+    "intro": "Böngészd a gyakorlatokat és a megmozgatott izmokat.",
+    "search": "Keresés",
+    "searchPlaceholder": "Gyakorlat keresése",
+    "allMuscles": "Összes izom",
+    "allEquipment": "Összes eszköz",
+    "noResults": "Nincs a szűrőknek megfelelő gyakorlat.",
+    "musclesWorked": "Megmozgatott izmok",
+    "primary": "Elsődleges",
+    "secondary": "Másodlagos",
+    "howTo": "Végrehajtás",
+    "equipment": "Eszköz",
+    "category": "Kategória",
+    "backToLibrary": "Összes gyakorlat",
+    "browseAll": "Böngészd a gyakorlat-tárat",
+    "count": "{count, plural, one {# gyakorlat} other {# gyakorlat}}"
   }
 }

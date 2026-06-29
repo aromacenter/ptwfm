@@ -6,7 +6,14 @@ export const dynamic = "force-dynamic";
 
 const base = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 const locales = ["en", "hu"];
-const staticPaths = ["", "/trainers", "/request-trainer", "/login", "/register"];
+const staticPaths = [
+  "",
+  "/trainers",
+  "/exercises",
+  "/request-trainer",
+  "/login",
+  "/register",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
@@ -40,6 +47,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {
     // ignore — return static entries only
+  }
+
+  // Public exercise library pages.
+  try {
+    const exercises = await prisma.exercise.findMany({
+      select: { slug: true, updatedAt: true },
+    });
+    for (const loc of locales) {
+      for (const ex of exercises) {
+        entries.push({
+          url: `${base}/${loc}/exercises/${ex.slug}`,
+          lastModified: ex.updatedAt,
+          changeFrequency: "monthly",
+          priority: 0.5,
+        });
+      }
+    }
+  } catch {
+    // ignore
   }
 
   return entries;
