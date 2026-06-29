@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/db";
 import { BodyMap } from "@/components/body-map";
+import { ExerciseAnimation } from "@/components/exercise-animation";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +82,14 @@ export default async function ExerciseDetailPage({
           </span>
         </p>
       </div>
+
+      <section className="flex justify-center rounded-xl border border-foreground/10 bg-foreground/[0.02] p-5">
+        <ExerciseAnimation
+          slug={exercise.slug}
+          category={exercise.category}
+          className="h-56 w-auto text-emerald-600"
+        />
+      </section>
 
       <section className="rounded-xl border border-foreground/10 p-5">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-foreground/60">
